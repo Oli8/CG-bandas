@@ -12,7 +12,7 @@ public class Referee extends AbstractReferee {
     @Inject private MultiplayerGameManager<Player> gameManager;
     @Inject private GraphicEntityModule graphicEntityModule;
 
-    private static final int WIDTH = 6;
+    private static final int WIDTH = 3;
     private static final int HEIGHT = 6;
     private int[][] grid = new int[WIDTH][HEIGHT];
     private static final int CELL_SIZE = 100;
@@ -35,22 +35,25 @@ public class Referee extends AbstractReferee {
     }
 
     private void drawGrid() {
-        // TODO: Dynamic grid drawing
         int start_y = (int) Math.round((CANVAS_HEIGHT - (HEIGHT * CELL_SIZE)) / 2);
+        int start_x = (int) Math.round((CANVAS_WIDTH - (WIDTH * CELL_SIZE)) / 2);
         System.out.println(start_y);
         int cell_y = start_y;
-        int cell_x = 100;
+        int cell_x = 100; // TODO: dynamic start x
         // Horizontal lines
-        for(int i = 0; i < HEIGHT+1; i++){
-            graphicEntityModule.createLine()
-                    .setX(cell_x)
-                    .setX2(cell_x + CELL_SIZE)
-                    .setY(cell_y)
-                    .setY2(cell_y)
-                    .setLineWidth(LINE_WIDTH)
-                    .setLineColor(LINE_COLOR);
+        for(int i=0; i<HEIGHT; i++){
+            for(int j=0; j<WIDTH; j++){
+                graphicEntityModule.createRectangle()
+                        .setX(start_x +(CELL_SIZE * j))
+                        .setY(cell_y)
+                        .setLineWidth(5)
+                        .setLineColor(LINE_COLOR)
+                        .setHeight(CELL_SIZE)
+                        .setWidth(CELL_SIZE);
+            }
             cell_y += CELL_SIZE;
         }
+
     }
 
     private int convertX(double unit) {
