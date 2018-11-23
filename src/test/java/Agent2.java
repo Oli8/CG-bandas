@@ -6,7 +6,7 @@ public class Agent2 {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            String input = scanner.nextLine();
+            // String input = scanner.nextLine();
             System.out.println("my output");
         }
     }
