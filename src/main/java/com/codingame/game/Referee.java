@@ -8,6 +8,8 @@ import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.google.inject.Inject;
 import com.codingame.gameengine.module.entities.Circle;
 
+import java.util.Arrays;
+
 public class Referee extends AbstractReferee {
     @Inject private MultiplayerGameManager<Player> gameManager;
     @Inject private GraphicEntityModule graphicEntityModule;
@@ -16,7 +18,7 @@ public class Referee extends AbstractReferee {
     private static final int HEIGHT = 6;
     private int[][] grid = new int[WIDTH][HEIGHT];
     private static final int CELL_SIZE = 100;
-    private static final int LINE_WIDTH = 10;
+    private static final int LINE_WIDTH = 5;
     private static final int LINE_COLOR = 0xff0000;
     private static final int CANVAS_WIDTH = 1920;
     private static final int CANVAS_HEIGHT = 1080;
@@ -32,25 +34,46 @@ public class Referee extends AbstractReferee {
                 .setAnchor(0);
         */
         drawGrid();
+        addPawns();
     }
 
     private void drawGrid() {
         int start_y = Math.round((CANVAS_HEIGHT - (HEIGHT * CELL_SIZE)) / 2);
         int start_x = Math.round((CANVAS_WIDTH - (WIDTH * CELL_SIZE)) / 2);
-        // Horizontal lines
+
         for(int i=0; i<HEIGHT; i++){
             for(int j=0; j<WIDTH; j++){
                 graphicEntityModule.createRectangle()
                         .setX(start_x +(CELL_SIZE * j))
                         .setY(start_y)
-                        .setLineWidth(5)
+                        .setLineWidth(LINE_WIDTH)
                         .setLineColor(LINE_COLOR)
                         .setHeight(CELL_SIZE)
                         .setWidth(CELL_SIZE);
             }
             start_y += CELL_SIZE;
         }
+    }
 
+    private void addPawns() {
+        int pawns_per_player= WIDTH * HEIGHT / 2;
+        int[] pawns = {pawns_per_player, pawns_per_player};
+
+        for(int i=0; i<HEIGHT; i++){
+            for(int j=0; j<WIDTH; j++){
+                int player_index;
+                if(pawns[0] == 0){
+                    player_index = 1;
+                } else if (pawns[1] == 0){
+                    player_index = 0;
+                } else {
+                    player_index = (int) Math.round(Math.random());
+                }
+                pawns[player_index] -= 1;
+                grid[i][j] = player_index;
+            }
+            System.out.println(Arrays.toString(grid[i]));
+        }
     }
 
     private int convertX(double unit) {
