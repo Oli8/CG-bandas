@@ -16,7 +16,7 @@ public class Referee extends AbstractReferee {
 
     private static final int WIDTH = 6;
     private static final int HEIGHT = 6;
-    private int[][] grid = new int[WIDTH][HEIGHT];
+    private int[][] grid = new int[HEIGHT][WIDTH];
     private static final int CELL_SIZE = 100;
     private static final int LINE_WIDTH = 5;
     private static final int LINE_COLOR = 0xff0000;
@@ -56,7 +56,7 @@ public class Referee extends AbstractReferee {
     }
 
     private void addPawns() {
-        int pawns_per_player= WIDTH * HEIGHT / 2;
+        int pawns_per_player = WIDTH * HEIGHT / 2;
         int[] pawns = {pawns_per_player, pawns_per_player};
 
         for(int i=0; i<HEIGHT; i++){
