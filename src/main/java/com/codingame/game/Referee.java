@@ -16,10 +16,12 @@ public class Referee extends AbstractReferee {
 
     private static final int WIDTH = 6;
     private static final int HEIGHT = 6;
-    private int[][] grid = new int[HEIGHT][WIDTH];
+    private static final String[][] grid = new String[HEIGHT][WIDTH];
     private static final int CELL_SIZE = 100;
     private static final int LINE_WIDTH = 5;
-    private static final int LINE_COLOR = 0xff0000;
+    private static final int LINE_COLOR = 0x2ecc71;
+    private static int[] PLAYER_COLOR= {0x3498db, 0xf88379};
+    private static final int PAWN_RADIUS = 30;
     private static final int CANVAS_WIDTH = 1920;
     private static final int CANVAS_HEIGHT = 1080;
     private static final int GRID_ORIGIN_X = (int) Math.round(CANVAS_WIDTH / 2 - CELL_SIZE);
@@ -27,14 +29,8 @@ public class Referee extends AbstractReferee {
 
     @Override
     public void init() {
-        // Display the background image. The asset image must be in the directory src/main/resources/view/assets
-        /*
-        graphicEntityModule.createSprite()
-                .setImage("Background.jpg")
-                .setAnchor(0);
-        */
-        drawGrid();
         addPawns();
+        drawGrid();
     }
 
     private void drawGrid() {
@@ -50,9 +46,25 @@ public class Referee extends AbstractReferee {
                         .setLineColor(LINE_COLOR)
                         .setHeight(CELL_SIZE)
                         .setWidth(CELL_SIZE);
+                String cell_value = grid[i][j];
+                if(cell_value.equals("0") || cell_value.equals("1")){
+                    drawPawn(
+                            start_x +(CELL_SIZE * j) + (CELL_SIZE / 2),
+                            start_y + (CELL_SIZE / 2),
+                            Integer.parseInt(cell_value)
+                    );
+                }
             }
             start_y += CELL_SIZE;
         }
+    }
+
+    private void drawPawn(int x, int y, int player_id) {
+        graphicEntityModule.createCircle()
+                .setRadius(PAWN_RADIUS)
+                .setFillColor(PLAYER_COLOR[player_id])
+                .setX(x)
+                .setY(y);
     }
 
     private void addPawns() {
@@ -70,7 +82,7 @@ public class Referee extends AbstractReferee {
                     player_index = (int) Math.round(Math.random());
                 }
                 pawns[player_index] -= 1;
-                grid[i][j] = player_index;
+                grid[i][j] = Integer.toString(player_index);
             }
             System.out.println(Arrays.toString(grid[i]));
         }
