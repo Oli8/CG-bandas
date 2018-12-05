@@ -88,14 +88,6 @@ public class Referee extends AbstractReferee {
         }
     }
 
-    private int convertX(double unit) {
-        return (int) (GRID_ORIGIN_X + unit * CELL_SIZE);
-    }
-
-    private int convertY(double unit) {
-        return (int) (GRID_ORIGIN_Y + unit * CELL_SIZE);
-    }
-
     @Override
     public void gameTurn(int turn) {
         Player player = gameManager.getPlayer(turn % gameManager.getPlayerCount());
@@ -103,11 +95,19 @@ public class Referee extends AbstractReferee {
 
         player.execute();
 
-        // Read player inputs (output) ?
+        // Read player output
         try {
             output = player.getOutputs().get(0);
-        } catch (NumberFormatException e) {
-            player.deactivate();
+            String[] direction = {"UP", "RIGHT", "DOWN", "LEFT"};
+            if(!Arrays.asList(direction).contains(output)){ // invalid ouput
+                gameManager.addToGameSummary(String.format("Player %s played invalid output %s",
+                        player.getNicknameToken(), output));
+                player.deactivate("Invalid action.");
+                player.setScore(-1);
+                gameManager.endGame();
+            }
+        } catch (IndexOutOfBoundsException e) {
+            player.deactivate("No output");
             player.setScore(-1);
             gameManager.endGame();
         } catch (TimeoutException e) {
