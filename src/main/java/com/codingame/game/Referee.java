@@ -98,8 +98,8 @@ public class Referee extends AbstractReferee {
         // Read player output
         try {
             output = player.getOutputs().get(0);
-            String[] direction = {"UP", "RIGHT", "DOWN", "LEFT"};
-            if(!Arrays.asList(direction).contains(output)){ // invalid ouput
+            String[] directions = {"UP", "RIGHT", "DOWN", "LEFT"};
+            if(!Arrays.asList(directions).contains(output)){ // invalid ouput
                 gameManager.addToGameSummary(String.format("Player %s played invalid output %s",
                         player.getNicknameToken(), output));
                 player.deactivate("Invalid action.");

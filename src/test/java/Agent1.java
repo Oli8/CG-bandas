@@ -7,9 +7,9 @@ public class Agent1 {
 
         while (true) {
             // String input = scanner.nextLine();
-            String[] direction = {"UP", "RIGHT", "DOWN", "LEFT"};
+            String[] directions = {"UP", "RIGHT", "DOWN", "LEFT"};
             System.out.println(
-                    direction[(new Random()).nextInt(direction.length)]);
+                    directions[(new Random()).nextInt(directions.length)]);
         }
     }
 }
