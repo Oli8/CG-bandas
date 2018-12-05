@@ -1,3 +1,4 @@
+import java.util.Random;
 import java.util.Scanner;
 
 public class Agent1 {
@@ -6,7 +7,9 @@ public class Agent1 {
 
         while (true) {
             // String input = scanner.nextLine();
-            System.out.println("my output");
+            String[] direction = {"UP", "RIGHT", "DOWN", "LEFT"};
+            System.out.println(
+                    direction[(new Random()).nextInt(direction.length)]);
         }
     }
 }
