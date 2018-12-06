@@ -6,7 +6,6 @@ import com.codingame.gameengine.core.GameManager;
 import com.codingame.gameengine.core.MultiplayerGameManager;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.google.inject.Inject;
-import com.codingame.gameengine.module.entities.Circle;
 
 import java.util.Arrays;
 
