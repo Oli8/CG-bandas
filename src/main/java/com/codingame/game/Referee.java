@@ -92,6 +92,7 @@ public class Referee extends AbstractReferee {
         Player player = gameManager.getPlayer(turn % gameManager.getPlayerCount());
         String output = "";
 
+        sendInputs(player);
         player.execute();
 
         // Read player output
@@ -119,5 +120,11 @@ public class Referee extends AbstractReferee {
 
         gameManager.addToGameSummary(String.format("Player %s played %s",
                 player.getNicknameToken(), output));
+    }
+
+    private void sendInputs(Player player) {
+        for(int i=0; i<HEIGHT; i++){
+            player.sendInputLine(String.join(" ", Arrays.asList(grid[i])));
+        }
     }
 }
