@@ -19,13 +19,10 @@ public class Referee extends AbstractReferee {
     private static final int CELL_SIZE = 100;
     private static final int LINE_WIDTH = 5;
     private static final int LINE_COLOR = 0x2ecc71;
-    private static int[] PLAYER_COLOR= {0x3498db, 0xf88379};
+    private static int[] PLAYER_COLOR= {0xf88379, 0x3498db};
     private static final int PAWN_RADIUS = 30;
     private static final int CANVAS_WIDTH = 1920;
     private static final int CANVAS_HEIGHT = 1080;
-    private static final int GRID_ORIGIN_X = (int) Math.round(CANVAS_WIDTH / 2 - CELL_SIZE);
-    private static final int GRID_ORIGIN_Y = (int) Math.round(CANVAS_HEIGHT / 2 - CELL_SIZE);
-
     @Override
     public void init() {
         addPawns();
@@ -89,7 +86,8 @@ public class Referee extends AbstractReferee {
 
     @Override
     public void gameTurn(int turn) {
-        Player player = gameManager.getPlayer(turn % gameManager.getPlayerCount());
+        String player_id = Integer.toString(turn % gameManager.getPlayerCount());
+        Player player = gameManager.getPlayer(Integer.parseInt(player_id));
         String output = "";
 
         sendInputs(player);
@@ -105,6 +103,21 @@ public class Referee extends AbstractReferee {
                 player.deactivate("Invalid action.");
                 player.setScore(-1);
                 gameManager.endGame();
+            } else {
+                switch(output) {
+                    case "UP" :
+                        move_up(player_id);
+                        break;
+                    case "DOWN":
+                        move_down(player_id);
+                        break;
+                    case "RIGHT":
+                        move_right(player_id);
+                        break;
+                    case "LEFT":
+                        move_left(player_id);
+                        break;
+                }
             }
         } catch (IndexOutOfBoundsException e) {
             player.deactivate("No output");
@@ -126,5 +139,134 @@ public class Referee extends AbstractReferee {
         for(int i=0; i<HEIGHT; i++){
             player.sendInputLine(String.join(" ", Arrays.asList(grid[i])));
         }
+    }
+
+    private void move_up(String player_id) {
+        // TODO: DRY and stuff
+        for(int col=0; col<WIDTH; col++) {
+            for (int y = 0; y < HEIGHT; y++) {
+                if (grid[y][col].equals(player_id)) {
+                    single_move_up(player_id, y, col);
+                }
+            }
+        }
+        drawGrid();
+    }
+
+    private boolean single_move_up(String player_id, int y, int x) {
+        int next_y = y - 1;
+        if(next_y < 0) { // player moves out of the map
+            grid[y][x] = "-";
+            return true;
+        }
+
+        String above_cell_state = grid[next_y][x];
+        if(above_cell_state.equals("-")) { // case empty
+            grid[y-1][x] = player_id;
+            grid[y][x] = "-";
+        }
+        else if(above_cell_state.equals("0") || above_cell_state.equals("1")){
+            single_move_up(above_cell_state, y - 1, x);
+            single_move_up(player_id, y, x);
+        }
+
+        return true;
+    }
+
+    private void move_down(String player_id) {
+        for(int col=0; col<WIDTH; col++) {
+            for (int y = HEIGHT-1; y >= 0; y--) {
+                if (grid[y][col].equals(player_id)) {
+                    single_move_down(player_id, y, col);
+                }
+            }
+        }
+        drawGrid();
+    }
+
+    private boolean single_move_down(String player_id, int y, int x) {
+        int next_y = y + 1;
+        if(next_y > HEIGHT - 1) { // player moves out of the map
+            grid[y][x] = "-";
+            return true;
+        }
+
+        String above_cell_state = grid[next_y][x];
+        if(above_cell_state.equals("-")) { // case empty
+            grid[y+1][x] = player_id;
+            grid[y][x] = "-";
+        }
+        else if(above_cell_state.equals("0") || above_cell_state.equals("1")){
+            single_move_down(above_cell_state, y + 1, x);
+            single_move_down(player_id, y, x);
+        }
+
+        return true;
+    }
+
+    private void move_right(String player_id) {
+        for (int y = 0; y < HEIGHT; y++) {
+            for(int col = WIDTH - 1; col>=0; col--) {
+                if(grid[y][col].equals(player_id)){
+                    single_move_right(player_id, y, col);
+                }
+            }
+        }
+        drawGrid();
+    }
+
+    private boolean single_move_right(String player_id, int y, int x) {
+        int next_x = x + 1;
+        if(next_x > WIDTH - 1) { // player moves out of the map
+            grid[y][x] = "-";
+            return true;
+        }
+
+        String above_cell_state = grid[y][next_x];
+        if(above_cell_state.equals("-")) { // case empty
+            grid[y][x+1] = player_id;
+            grid[y][x] = "-";
+        }
+        else if(above_cell_state.equals("0") || above_cell_state.equals("1")){
+            single_move_right(above_cell_state, y, x + 1);
+            single_move_right(player_id, y, x);
+        }
+
+        return true;
+    }
+
+    private void move_left(String player_id) {
+        for (int y = 0; y < HEIGHT; y++) {
+            for(int col = 0; col<WIDTH; col++) {
+                if(grid[y][col].equals(player_id)){
+                    single_move_left(player_id, y, col);
+                }
+            }
+        }
+        drawGrid();
+    }
+
+    private boolean single_move_left(String player_id, int y, int x) {
+        int next_x = x - 1;
+        if(next_x < 0) { // player moves out of the map
+            grid[y][x] = "-";
+            return true;
+        }
+
+        String above_cell_state = grid[y][next_x];
+        if(above_cell_state.equals("-")) { // case empty
+            grid[y][x-1] = player_id;
+            grid[y][x] = "-";
+        }
+        else if(above_cell_state.equals("0") || above_cell_state.equals("1")){
+            single_move_right(above_cell_state, y, x - 1);
+            single_move_right(player_id, y, x);
+        }
+
+        return true;
+    }
+
+    private String get_opponent_id(String player_id) {
+        return Integer.toString(1 - Integer.parseInt(player_id));
     }
 }
