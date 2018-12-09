@@ -259,8 +259,8 @@ public class Referee extends AbstractReferee {
             grid[y][x] = "-";
         }
         else if(above_cell_state.equals("0") || above_cell_state.equals("1")){
-            single_move_right(above_cell_state, y, x - 1);
-            single_move_right(player_id, y, x);
+            single_move_left(above_cell_state, y, x - 1);
+            single_move_left(player_id, y, x);
         }
 
         return true;
