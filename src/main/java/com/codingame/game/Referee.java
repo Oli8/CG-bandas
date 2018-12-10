@@ -118,6 +118,7 @@ public class Referee extends AbstractReferee {
                         move_left(player_id);
                         break;
                 }
+                drawGrid();
             }
         } catch (IndexOutOfBoundsException e) {
             player.deactivate("No output");
@@ -152,7 +153,6 @@ public class Referee extends AbstractReferee {
                 }
             }
         }
-        drawGrid();
     }
 
     private boolean single_move_up(String player_id, int y, int x) {
@@ -183,7 +183,6 @@ public class Referee extends AbstractReferee {
                 }
             }
         }
-        drawGrid();
     }
 
     private boolean single_move_down(String player_id, int y, int x) {
@@ -214,7 +213,6 @@ public class Referee extends AbstractReferee {
                 }
             }
         }
-        drawGrid();
     }
 
     private boolean single_move_right(String player_id, int y, int x) {
@@ -245,7 +243,6 @@ public class Referee extends AbstractReferee {
                 }
             }
         }
-        drawGrid();
     }
 
     private boolean single_move_left(String player_id, int y, int x) {
