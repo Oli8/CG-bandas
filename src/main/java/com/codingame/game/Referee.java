@@ -133,6 +133,8 @@ public class Referee extends AbstractReferee {
 
         gameManager.addToGameSummary(String.format("Player %s played %s",
                 player.getNicknameToken(), output));
+
+        checkWinner();
     }
 
     private void sendInputs(Player player) {
@@ -268,5 +270,38 @@ public class Referee extends AbstractReferee {
 
     private String get_opponent_id(String player_id) {
         return Integer.toString(1 - Integer.parseInt(player_id));
+    }
+
+    private boolean checkWinner() {
+        int player_a = 0;
+        int player_b = 0;
+
+        for (int y = 0; y < HEIGHT; y++) {
+            for(int col = 0; col < WIDTH; col++) {
+                String cell_state = grid[y][col];
+                if(cell_state.equals("0")){
+                    player_a++;
+                } else if(cell_state.equals("1")){
+                    player_b++;
+                }
+
+                if(player_a > 0 && player_b > 0) { // Game still in progress
+                    return false;
+                }
+            }
+        }
+
+        Player winner;
+        if(player_a == 0){
+            winner = gameManager.getPlayer(1);
+        } else {
+            winner = gameManager.getPlayer(0);
+        }
+
+        gameManager.addToGameSummary(GameManager.formatSuccessMessage(
+                winner.getNicknameToken() + " won!"));
+        winner.setScore(1);
+        gameManager.endGame();
+        return true;
     }
 }
