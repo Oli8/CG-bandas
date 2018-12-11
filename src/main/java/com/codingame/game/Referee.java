@@ -213,12 +213,12 @@ public class Referee extends AbstractReferee {
             return true;
         }
 
-        String above_cell_state = GRID[next_y][x];
-        if(above_cell_state.equals("-")) { // case empty
+        String below_cell_state = GRID[next_y][x];
+        if(below_cell_state.equals("-")) { // case empty
             move_circle(player_id, y, x, "DOWN", false);
         }
-        else if(above_cell_state.equals("0") || above_cell_state.equals("1")){
-            single_move_down(above_cell_state, y + 1, x);
+        else if(below_cell_state.equals("0") || below_cell_state.equals("1")){
+            single_move_down(below_cell_state, y + 1, x);
             single_move_down(player_id, y, x);
         }
 
@@ -242,12 +242,13 @@ public class Referee extends AbstractReferee {
             return true;
         }
 
-        String above_cell_state = GRID[y][next_x];
-        if(above_cell_state.equals("-")) { // case empty
+        // TODO: Handle "dead" line
+        String right_cell_state = GRID[y][next_x];
+        if(right_cell_state.equals("-")) { // case empty
             move_circle(player_id, y, x, "RIGHT", false);
         }
-        else if(above_cell_state.equals("0") || above_cell_state.equals("1")){
-            single_move_right(above_cell_state, y, x + 1);
+        else if(right_cell_state.equals("0") || right_cell_state.equals("1")){
+            single_move_right(right_cell_state, y, x + 1);
             single_move_right(player_id, y, x);
         }
 
@@ -271,12 +272,12 @@ public class Referee extends AbstractReferee {
             return true;
         }
 
-        String above_cell_state = GRID[y][next_x];
-        if(above_cell_state.equals("-")) { // case empty
+        String left_cell_state = GRID[y][next_x];
+        if(left_cell_state.equals("-")) { // case empty
             move_circle(player_id, y, x, "LEFT", false);
         }
-        else if(above_cell_state.equals("0") || above_cell_state.equals("1")){
-            single_move_left(above_cell_state, y, x - 1);
+        else if(left_cell_state.equals("0") || left_cell_state.equals("1")){
+            single_move_left(left_cell_state, y, x - 1);
             single_move_left(player_id, y, x);
         }
 
