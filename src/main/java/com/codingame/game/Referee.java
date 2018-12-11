@@ -5,6 +5,7 @@ import com.codingame.gameengine.core.AbstractReferee;
 import com.codingame.gameengine.core.GameManager;
 import com.codingame.gameengine.core.MultiplayerGameManager;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
+import com.codingame.gameengine.module.entities.Circle;
 import com.google.inject.Inject;
 
 import java.util.Arrays;
@@ -15,11 +16,11 @@ public class Referee extends AbstractReferee {
 
     private static final int WIDTH = 6;
     private static final int HEIGHT = 6;
-    private static final String[][] grid = new String[HEIGHT][WIDTH];
+    private static final String[][] GRID = new String[HEIGHT][WIDTH];
     private static final int CELL_SIZE = 100;
     private static final int LINE_WIDTH = 5;
     private static final int LINE_COLOR = 0x2ecc71;
-    private static int[] PLAYER_COLOR= {0xf88379, 0x3498db};
+    private static final int[] PLAYER_COLOR= {0xf88379, 0x3498db};
     private static final int PAWN_RADIUS = 30;
     private static final int CANVAS_WIDTH = 1920;
     private static final int CANVAS_HEIGHT = 1080;
@@ -42,7 +43,7 @@ public class Referee extends AbstractReferee {
                         .setLineColor(LINE_COLOR)
                         .setHeight(CELL_SIZE)
                         .setWidth(CELL_SIZE);
-                String cell_value = grid[i][j];
+                String cell_value = GRID[i][j];
                 if(cell_value.equals("0") || cell_value.equals("1")){
                     drawPawn(
                             start_x +(CELL_SIZE * j) + (CELL_SIZE / 2),
@@ -78,9 +79,9 @@ public class Referee extends AbstractReferee {
                     player_index = (int) Math.round(Math.random());
                 }
                 pawns[player_index] -= 1;
-                grid[i][j] = Integer.toString(player_index);
+                GRID[i][j] = Integer.toString(player_index);
             }
-            System.out.println(Arrays.toString(grid[i]));
+            System.out.println(Arrays.toString(GRID[i]));
         }
     }
 
@@ -140,7 +141,7 @@ public class Referee extends AbstractReferee {
 
     private void sendInputs(Player player) {
         for(int i=0; i<HEIGHT; i++){
-            player.sendInputLine(String.join(" ", Arrays.asList(grid[i])));
+            player.sendInputLine(String.join(" ", Arrays.asList(GRID[i])));
         }
     }
 
@@ -148,7 +149,7 @@ public class Referee extends AbstractReferee {
         // TODO: DRY and stuff
         for(int col=0; col<WIDTH; col++) {
             for (int y = 0; y < HEIGHT; y++) {
-                if (grid[y][col].equals(player_id)) {
+                if (GRID[y][col].equals(player_id)) {
                     single_move_up(player_id, y, col);
                 }
             }
@@ -158,14 +159,14 @@ public class Referee extends AbstractReferee {
     private boolean single_move_up(String player_id, int y, int x) {
         int next_y = y - 1;
         if(next_y < 0) { // player moves out of the map
-            grid[y][x] = "-";
+            GRID[y][x] = "-";
             return true;
         }
 
-        String above_cell_state = grid[next_y][x];
+        String above_cell_state = GRID[next_y][x];
         if(above_cell_state.equals("-")) { // case empty
-            grid[y-1][x] = player_id;
-            grid[y][x] = "-";
+            GRID[y-1][x] = player_id;
+            GRID[y][x] = "-";
         }
         else if(above_cell_state.equals("0") || above_cell_state.equals("1")){
             single_move_up(above_cell_state, y - 1, x);
@@ -178,7 +179,7 @@ public class Referee extends AbstractReferee {
     private void move_down(String player_id) {
         for(int col=0; col<WIDTH; col++) {
             for (int y = HEIGHT-1; y >= 0; y--) {
-                if (grid[y][col].equals(player_id)) {
+                if (GRID[y][col].equals(player_id)) {
                     single_move_down(player_id, y, col);
                 }
             }
@@ -188,14 +189,14 @@ public class Referee extends AbstractReferee {
     private boolean single_move_down(String player_id, int y, int x) {
         int next_y = y + 1;
         if(next_y > HEIGHT - 1) { // player moves out of the map
-            grid[y][x] = "-";
+            GRID[y][x] = "-";
             return true;
         }
 
-        String above_cell_state = grid[next_y][x];
+        String above_cell_state = GRID[next_y][x];
         if(above_cell_state.equals("-")) { // case empty
-            grid[y+1][x] = player_id;
-            grid[y][x] = "-";
+            GRID[y+1][x] = player_id;
+            GRID[y][x] = "-";
         }
         else if(above_cell_state.equals("0") || above_cell_state.equals("1")){
             single_move_down(above_cell_state, y + 1, x);
@@ -208,7 +209,7 @@ public class Referee extends AbstractReferee {
     private void move_right(String player_id) {
         for (int y = 0; y < HEIGHT; y++) {
             for(int col = WIDTH - 1; col>=0; col--) {
-                if(grid[y][col].equals(player_id)){
+                if(GRID[y][col].equals(player_id)){
                     single_move_right(player_id, y, col);
                 }
             }
@@ -218,14 +219,14 @@ public class Referee extends AbstractReferee {
     private boolean single_move_right(String player_id, int y, int x) {
         int next_x = x + 1;
         if(next_x > WIDTH - 1) { // player moves out of the map
-            grid[y][x] = "-";
+            GRID[y][x] = "-";
             return true;
         }
 
-        String above_cell_state = grid[y][next_x];
+        String above_cell_state = GRID[y][next_x];
         if(above_cell_state.equals("-")) { // case empty
-            grid[y][x+1] = player_id;
-            grid[y][x] = "-";
+            GRID[y][x+1] = player_id;
+            GRID[y][x] = "-";
         }
         else if(above_cell_state.equals("0") || above_cell_state.equals("1")){
             single_move_right(above_cell_state, y, x + 1);
@@ -238,7 +239,7 @@ public class Referee extends AbstractReferee {
     private void move_left(String player_id) {
         for (int y = 0; y < HEIGHT; y++) {
             for(int col = 0; col<WIDTH; col++) {
-                if(grid[y][col].equals(player_id)){
+                if(GRID[y][col].equals(player_id)){
                     single_move_left(player_id, y, col);
                 }
             }
@@ -248,14 +249,14 @@ public class Referee extends AbstractReferee {
     private boolean single_move_left(String player_id, int y, int x) {
         int next_x = x - 1;
         if(next_x < 0) { // player moves out of the map
-            grid[y][x] = "-";
+            GRID[y][x] = "-";
             return true;
         }
 
-        String above_cell_state = grid[y][next_x];
+        String above_cell_state = GRID[y][next_x];
         if(above_cell_state.equals("-")) { // case empty
-            grid[y][x-1] = player_id;
-            grid[y][x] = "-";
+            GRID[y][x-1] = player_id;
+            GRID[y][x] = "-";
         }
         else if(above_cell_state.equals("0") || above_cell_state.equals("1")){
             single_move_left(above_cell_state, y, x - 1);
@@ -275,7 +276,7 @@ public class Referee extends AbstractReferee {
 
         for (int y = 0; y < HEIGHT; y++) {
             for(int col = 0; col < WIDTH; col++) {
-                String cell_state = grid[y][col];
+                String cell_state = GRID[y][col];
                 if(cell_state.equals("0")){
                     player_a++;
                 } else if(cell_state.equals("1")){
