@@ -9,6 +9,7 @@ import com.codingame.gameengine.module.entities.Circle;
 import com.google.inject.Inject;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class Referee extends AbstractReferee {
     @Inject private MultiplayerGameManager<Player> gameManager;
@@ -17,6 +18,7 @@ public class Referee extends AbstractReferee {
     private static final int WIDTH = 6;
     private static final int HEIGHT = 6;
     private static final String[][] GRID = new String[HEIGHT][WIDTH];
+    private static final Circle[][] GRAPHICS = new Circle[HEIGHT][WIDTH];
     private static final int CELL_SIZE = 100;
     private static final int LINE_WIDTH = 5;
     private static final int LINE_COLOR = 0x2ecc71;
@@ -24,6 +26,23 @@ public class Referee extends AbstractReferee {
     private static final int PAWN_RADIUS = 30;
     private static final int CANVAS_WIDTH = 1920;
     private static final int CANVAS_HEIGHT = 1080;
+    private static final HashMap<String, int[]> NEXT_POS;
+    static
+    {
+        NEXT_POS = new HashMap<String, int[]>();
+        int[] up_next_pos = {-1, 0};
+        NEXT_POS.put("UP", up_next_pos);
+
+        int[] down_next_pos = {1, 0};
+        NEXT_POS.put("DOWN", down_next_pos);
+
+        int[] right_next_pos = {0, 1};
+        NEXT_POS.put("RIGHT", right_next_pos);
+
+        int[] left_next_pos = {0, -1};
+        NEXT_POS.put("LEFT", left_next_pos);
+    }
+
     @Override
     public void init() {
         addPawns();
@@ -36,16 +55,19 @@ public class Referee extends AbstractReferee {
 
         for(int i=0; i<HEIGHT; i++){
             for(int j=0; j<WIDTH; j++){
+                // Draw Tile
                 graphicEntityModule.createRectangle()
                         .setX(start_x +(CELL_SIZE * j))
                         .setY(start_y)
                         .setLineWidth(LINE_WIDTH)
                         .setLineColor(LINE_COLOR)
                         .setHeight(CELL_SIZE)
-                        .setWidth(CELL_SIZE);
+                        .setWidth(CELL_SIZE)
+                        .setZIndex(1);
                 String cell_value = GRID[i][j];
+                // Draw Pawn
                 if(cell_value.equals("0") || cell_value.equals("1")){
-                    drawPawn(
+                    GRAPHICS[i][j] = drawPawn(
                             start_x +(CELL_SIZE * j) + (CELL_SIZE / 2),
                             start_y + (CELL_SIZE / 2),
                             Integer.parseInt(cell_value)
@@ -56,12 +78,13 @@ public class Referee extends AbstractReferee {
         }
     }
 
-    private void drawPawn(int x, int y, int player_id) {
-        graphicEntityModule.createCircle()
+    private Circle drawPawn(int x, int y, int player_id) {
+        return graphicEntityModule.createCircle()
                 .setRadius(PAWN_RADIUS)
                 .setFillColor(PLAYER_COLOR[player_id])
                 .setX(x)
-                .setY(y);
+                .setY(y)
+                .setZIndex(2);
     }
 
     private void addPawns() {
@@ -119,7 +142,6 @@ public class Referee extends AbstractReferee {
                         move_left(player_id);
                         break;
                 }
-                drawGrid();
             }
         } catch (IndexOutOfBoundsException e) {
             player.deactivate("No output");
@@ -146,7 +168,6 @@ public class Referee extends AbstractReferee {
     }
 
     private void move_up(String player_id) {
-        // TODO: DRY and stuff
         for(int col=0; col<WIDTH; col++) {
             for (int y = 0; y < HEIGHT; y++) {
                 if (GRID[y][col].equals(player_id)) {
@@ -159,14 +180,13 @@ public class Referee extends AbstractReferee {
     private boolean single_move_up(String player_id, int y, int x) {
         int next_y = y - 1;
         if(next_y < 0) { // player moves out of the map
-            GRID[y][x] = "-";
+            move_circle(player_id, y, x, "UP", true);
             return true;
         }
 
         String above_cell_state = GRID[next_y][x];
         if(above_cell_state.equals("-")) { // case empty
-            GRID[y-1][x] = player_id;
-            GRID[y][x] = "-";
+            move_circle(player_id, y, x, "UP", false);
         }
         else if(above_cell_state.equals("0") || above_cell_state.equals("1")){
             single_move_up(above_cell_state, y - 1, x);
@@ -189,14 +209,13 @@ public class Referee extends AbstractReferee {
     private boolean single_move_down(String player_id, int y, int x) {
         int next_y = y + 1;
         if(next_y > HEIGHT - 1) { // player moves out of the map
-            GRID[y][x] = "-";
+            move_circle(player_id, y, x, "DOWN", true);
             return true;
         }
 
         String above_cell_state = GRID[next_y][x];
         if(above_cell_state.equals("-")) { // case empty
-            GRID[y+1][x] = player_id;
-            GRID[y][x] = "-";
+            move_circle(player_id, y, x, "DOWN", false);
         }
         else if(above_cell_state.equals("0") || above_cell_state.equals("1")){
             single_move_down(above_cell_state, y + 1, x);
@@ -219,14 +238,13 @@ public class Referee extends AbstractReferee {
     private boolean single_move_right(String player_id, int y, int x) {
         int next_x = x + 1;
         if(next_x > WIDTH - 1) { // player moves out of the map
-            GRID[y][x] = "-";
+            move_circle(player_id, y, x, "RIGHT", true);
             return true;
         }
 
         String above_cell_state = GRID[y][next_x];
         if(above_cell_state.equals("-")) { // case empty
-            GRID[y][x+1] = player_id;
-            GRID[y][x] = "-";
+            move_circle(player_id, y, x, "RIGHT", false);
         }
         else if(above_cell_state.equals("0") || above_cell_state.equals("1")){
             single_move_right(above_cell_state, y, x + 1);
@@ -249,14 +267,13 @@ public class Referee extends AbstractReferee {
     private boolean single_move_left(String player_id, int y, int x) {
         int next_x = x - 1;
         if(next_x < 0) { // player moves out of the map
-            GRID[y][x] = "-";
+            move_circle(player_id, y, x, "LEFT", true);
             return true;
         }
 
         String above_cell_state = GRID[y][next_x];
         if(above_cell_state.equals("-")) { // case empty
-            GRID[y][x-1] = player_id;
-            GRID[y][x] = "-";
+            move_circle(player_id, y, x, "LEFT", false);
         }
         else if(above_cell_state.equals("0") || above_cell_state.equals("1")){
             single_move_left(above_cell_state, y, x - 1);
@@ -264,10 +281,6 @@ public class Referee extends AbstractReferee {
         }
 
         return true;
-    }
-
-    private String get_opponent_id(String player_id) {
-        return Integer.toString(1 - Integer.parseInt(player_id));
     }
 
     private boolean checkWinner() {
@@ -301,5 +314,35 @@ public class Referee extends AbstractReferee {
         winner.setScore(1);
         gameManager.endGame();
         return true;
+    }
+
+    private void move_circle(String player_id, int y, int x, String direction, boolean remove_after) {
+        Circle pawn = GRAPHICS[y][x];
+
+        switch (direction) {
+            case "UP":
+                pawn.setY(pawn.getY() - CELL_SIZE);
+                break;
+            case "DOWN":
+                pawn.setY(pawn.getY() + CELL_SIZE);
+                break;
+            case "RIGHT":
+                pawn.setX(pawn.getX() + CELL_SIZE);
+                break;
+            case "LEFT":
+                pawn.setX(pawn.getX() - CELL_SIZE);
+                break;
+        }
+
+        if(remove_after) {
+            pawn.setVisible(false);
+        } else {
+            int[] dir_next_pos = NEXT_POS.get(direction);
+            int[] next_pos_coord = {y+dir_next_pos[0], x+dir_next_pos[1]};
+            GRID[next_pos_coord[0]][next_pos_coord[1]] = player_id;
+            GRAPHICS[next_pos_coord[0]][next_pos_coord[1]] = pawn;
+        }
+        GRID[y][x] = "-";
+        GRAPHICS[y][x] = null;
     }
 }
