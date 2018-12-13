@@ -104,7 +104,6 @@ public class Referee extends AbstractReferee {
                 pawns[player_index] -= 1;
                 GRID[i][j] = Integer.toString(player_index);
             }
-            System.out.println(Arrays.toString(GRID[i]));
         }
     }
 
@@ -128,20 +127,7 @@ public class Referee extends AbstractReferee {
                 player.setScore(-1);
                 gameManager.endGame();
             } else {
-                switch(output) {
-                    case "UP" :
-                        move_up(player_id);
-                        break;
-                    case "DOWN":
-                        move_down(player_id);
-                        break;
-                    case "RIGHT":
-                        move_right(player_id);
-                        break;
-                    case "LEFT":
-                        move_left(player_id);
-                        break;
-                }
+                handlePlayerOutput(output, player_id);
             }
         } catch (IndexOutOfBoundsException e) {
             player.deactivate("No output");
@@ -159,6 +145,23 @@ public class Referee extends AbstractReferee {
                 player.getNicknameToken(), output));
 
         checkWinner();
+    }
+
+    private void handlePlayerOutput(String output, String player_id) {
+        switch(output) {
+            case "UP" :
+                move_up(player_id);
+                break;
+            case "DOWN":
+                move_down(player_id);
+                break;
+            case "RIGHT":
+                move_right(player_id);
+                break;
+            case "LEFT":
+                move_left(player_id);
+                break;
+        }
     }
 
     private void sendInputs(Player player) {
