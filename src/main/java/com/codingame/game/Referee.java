@@ -123,22 +123,21 @@ public class Referee extends AbstractReferee {
             if(!Arrays.asList(DIRECTIONS).contains(output)){ // invalid ouput
                 gameManager.addToGameSummary(String.format("Player %s played invalid output %s",
                         player.getNicknameToken(), output));
-                player.deactivate("Invalid action.");
-                player.setScore(-1);
-                gameManager.endGame();
+                deactivate_player(player, "Invalid action.");
+                return;
             } else {
                 handlePlayerOutput(output, player_id);
             }
         } catch (IndexOutOfBoundsException e) {
-            player.deactivate("No output");
-            player.setScore(-1);
-            gameManager.endGame();
+            gameManager.addToGameSummary(String.format("Player %s did not output anything",
+                    player.getNicknameToken()));
+            deactivate_player(player, "No output");
+            return;
         } catch (TimeoutException e) {
             gameManager.addToGameSummary(GameManager.formatErrorMessage(
                     player.getNicknameToken() + " timeout!"));
-            player.deactivate();
-            player.setScore(-1);
-            gameManager.endGame();
+            deactivate_player(player, "Timeout");
+            return;
         }
 
         gameManager.addToGameSummary(String.format("Player %s played %s",
@@ -348,5 +347,11 @@ public class Referee extends AbstractReferee {
         }
         GRID[y][x] = "-";
         GRAPHICS[y][x] = null;
+    }
+
+    private void deactivate_player(Player player, String reason) {
+        player.deactivate(reason);
+        player.setScore(-1);
+        gameManager.endGame();
     }
 }
