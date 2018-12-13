@@ -26,6 +26,7 @@ public class Referee extends AbstractReferee {
     private static final int PAWN_RADIUS = 30;
     private static final int CANVAS_WIDTH = 1920;
     private static final int CANVAS_HEIGHT = 1080;
+    private static  final String[] DIRECTIONS = {"UP", "RIGHT", "DOWN", "LEFT"};
     private static final HashMap<String, int[]> NEXT_POS;
     static
     {
@@ -119,8 +120,7 @@ public class Referee extends AbstractReferee {
         // Read player output
         try {
             output = player.getOutputs().get(0);
-            String[] directions = {"UP", "RIGHT", "DOWN", "LEFT"};
-            if(!Arrays.asList(directions).contains(output)){ // invalid ouput
+            if(!Arrays.asList(DIRECTIONS).contains(output)){ // invalid ouput
                 gameManager.addToGameSummary(String.format("Player %s played invalid output %s",
                         player.getNicknameToken(), output));
                 player.deactivate("Invalid action.");
