@@ -67,7 +67,7 @@ public class Referee extends AbstractReferee {
                         .setZIndex(1);
                 String cell_value = GRID[i][j];
                 // Draw Pawn
-                if(cell_value.equals("0") || cell_value.equals("1")){
+                if(cell_has_player(cell_value)){
                     GRAPHICS[i][j] = drawPawn(
                             start_x +(CELL_SIZE * j) + (CELL_SIZE / 2),
                             start_y + (CELL_SIZE / 2),
@@ -190,7 +190,7 @@ public class Referee extends AbstractReferee {
         if(above_cell_state.equals("-")) { // case empty
             move_circle(player_id, y, x, "UP", false);
         }
-        else if(above_cell_state.equals("0") || above_cell_state.equals("1")){
+        else if(cell_has_player(above_cell_state)){
             single_move_up(above_cell_state, y - 1, x);
             single_move_up(player_id, y, x);
         }
@@ -219,7 +219,7 @@ public class Referee extends AbstractReferee {
         if(below_cell_state.equals("-")) { // case empty
             move_circle(player_id, y, x, "DOWN", false);
         }
-        else if(below_cell_state.equals("0") || below_cell_state.equals("1")){
+        else if(cell_has_player(below_cell_state)){
             single_move_down(below_cell_state, y + 1, x);
             single_move_down(player_id, y, x);
         }
@@ -244,12 +244,11 @@ public class Referee extends AbstractReferee {
             return true;
         }
 
-        // TODO: Handle "dead" line
         String right_cell_state = GRID[y][next_x];
         if(right_cell_state.equals("-")) { // case empty
             move_circle(player_id, y, x, "RIGHT", false);
         }
-        else if(right_cell_state.equals("0") || right_cell_state.equals("1")){
+        else if(cell_has_player(right_cell_state)){
             single_move_right(right_cell_state, y, x + 1);
             single_move_right(player_id, y, x);
         }
@@ -278,7 +277,7 @@ public class Referee extends AbstractReferee {
         if(left_cell_state.equals("-")) { // case empty
             move_circle(player_id, y, x, "LEFT", false);
         }
-        else if(left_cell_state.equals("0") || left_cell_state.equals("1")){
+        else if(cell_has_player(left_cell_state)){
             single_move_left(left_cell_state, y, x - 1);
             single_move_left(player_id, y, x);
         }
@@ -317,6 +316,11 @@ public class Referee extends AbstractReferee {
         winner.setScore(1);
         gameManager.endGame();
         return true;
+    }
+
+    private boolean cell_has_player(String cell_value) {
+        // Check if a grid cell has a player on it
+        return cell_value.equals("0") || cell_value.equals("1");
     }
 
     private void move_circle(String player_id, int y, int x, String direction, boolean remove_after) {
