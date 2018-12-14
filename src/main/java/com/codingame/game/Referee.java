@@ -144,6 +144,7 @@ public class Referee extends AbstractReferee {
                 player.getNicknameToken(), output));
 
         checkWinner();
+        find_empty_lines();
     }
 
     private void handlePlayerOutput(String output, String player_id) {
@@ -283,6 +284,46 @@ public class Referee extends AbstractReferee {
         }
 
         return true;
+    }
+
+    private void find_empty_lines() {
+        boolean line_to_remove = true;
+        // lines from the top
+        for(int i=0; i<HEIGHT; i++) {
+            line_to_remove = true;
+            for(int j=0; j<WIDTH; j++) {
+                String cell_value = GRID[i][j];
+                if(cell_value.equals("x") || cell_has_player(cell_value)) {
+                    line_to_remove = false;
+                    break;
+                }
+            }
+            if(line_to_remove) {
+                remove_line(i);
+            } else {
+                break;
+            }
+        }
+        // lines from the bottom
+        for(int i=HEIGHT-1; i>=0; i--) {
+            line_to_remove = true;
+            for(int j=0; j<WIDTH; j++) {
+                String cell_value = GRID[i][j];
+                if(cell_value.equals("x") || cell_has_player(cell_value)) {
+                    line_to_remove = false;
+                    break;
+                }
+            }
+            if(line_to_remove) {
+                remove_line(i);
+            } else {
+                break;
+            }
+        }
+    }
+
+    private void remove_line(int line_index) {
+        gameManager.addToGameSummary(String.format("Line to remove: %s", line_index));
     }
 
     private boolean checkWinner() {
