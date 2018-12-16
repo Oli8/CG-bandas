@@ -57,6 +57,7 @@ public class Referee extends AbstractReferee {
         for(int i=0; i<HEIGHT; i++){
             for(int j=0; j<WIDTH; j++){
                 // Draw Tile
+                /*
                 graphicEntityModule.createRectangle()
                         .setX(start_x +(CELL_SIZE * j))
                         .setY(start_y)
@@ -65,6 +66,12 @@ public class Referee extends AbstractReferee {
                         .setHeight(CELL_SIZE)
                         .setWidth(CELL_SIZE)
                         .setZIndex(1);
+                */
+                graphicEntityModule.createSprite()
+                        .setX(start_x +(CELL_SIZE * j))
+                        .setY(start_y)
+                        .setImage("medievalTile_27.png")
+                        .setScale(1.5625);
                 String cell_value = GRID[i][j];
                 // Draw Pawn
                 if(cell_has_player(cell_value)){
