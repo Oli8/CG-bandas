@@ -57,16 +57,6 @@ public class Referee extends AbstractReferee {
         for(int i=0; i<HEIGHT; i++){
             for(int j=0; j<WIDTH; j++){
                 // Draw Tile
-                /*
-                graphicEntityModule.createRectangle()
-                        .setX(start_x +(CELL_SIZE * j))
-                        .setY(start_y)
-                        .setLineWidth(LINE_WIDTH)
-                        .setLineColor(LINE_COLOR)
-                        .setHeight(CELL_SIZE)
-                        .setWidth(CELL_SIZE)
-                        .setZIndex(1);
-                */
                 graphicEntityModule.createSprite()
                         .setX(start_x +(CELL_SIZE * j))
                         .setY(start_y)
@@ -390,7 +380,8 @@ public class Referee extends AbstractReferee {
         }
 
         if(remove_after) {
-            pawn.setVisible(false);
+            graphicEntityModule.commitEntityState(0.7, pawn);
+            pawn.setAlpha(0);
         } else {
             int[] dir_next_pos = NEXT_POS.get(direction);
             int[] next_pos_coord = {y+dir_next_pos[0], x+dir_next_pos[1]};
