@@ -18,7 +18,7 @@ public class Referee extends AbstractReferee {
     private static final int WIDTH = 6;
     private static final int HEIGHT = 6;
     private static final String[][] GRID = new String[HEIGHT][WIDTH];
-    private static final Circle[][] GRAPHICS = new Circle[HEIGHT][WIDTH];
+    private static final Circle[][] PAWNS = new Circle[HEIGHT][WIDTH];
     private static final int CELL_SIZE = 100;
     private static final int LINE_WIDTH = 5;
     private static final int LINE_COLOR = 0x2ecc71;
@@ -65,7 +65,7 @@ public class Referee extends AbstractReferee {
                 String cell_value = GRID[i][j];
                 // Draw Pawn
                 if(cell_has_player(cell_value)){
-                    GRAPHICS[i][j] = drawPawn(
+                    PAWNS[i][j] = drawPawn(
                             start_x +(CELL_SIZE * j) + (CELL_SIZE / 2),
                             start_y + (CELL_SIZE / 2),
                             Integer.parseInt(cell_value)
@@ -362,7 +362,7 @@ public class Referee extends AbstractReferee {
     }
 
     private void move_circle(String player_id, int y, int x, String direction, boolean remove_after) {
-        Circle pawn = GRAPHICS[y][x];
+        Circle pawn = PAWNS[y][x];
 
         switch (direction) {
             case "UP":
@@ -386,10 +386,10 @@ public class Referee extends AbstractReferee {
             int[] dir_next_pos = NEXT_POS.get(direction);
             int[] next_pos_coord = {y+dir_next_pos[0], x+dir_next_pos[1]};
             GRID[next_pos_coord[0]][next_pos_coord[1]] = player_id;
-            GRAPHICS[next_pos_coord[0]][next_pos_coord[1]] = pawn;
+            PAWNS[next_pos_coord[0]][next_pos_coord[1]] = pawn;
         }
         GRID[y][x] = "-";
-        GRAPHICS[y][x] = null;
+        PAWNS[y][x] = null;
     }
 
     private void deactivate_player(Player player, String reason) {
