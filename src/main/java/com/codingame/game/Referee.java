@@ -185,12 +185,11 @@ public class Referee extends AbstractReferee {
         }
 
         String above_cell_state = GRID[next_y][x];
-        if(above_cell_state.equals("-")) { // case empty
-            move_circle(player_id, y, x, "UP", false);
-        }
-        else if(cell_has_player(above_cell_state)){
+        if(cell_has_player(above_cell_state)){
             single_move_up(above_cell_state, y - 1, x);
             single_move_up(player_id, y, x);
+        } else {
+            move_circle(player_id, y, x, "UP", above_cell_state.equals("x"));
         }
 
         return true;
@@ -214,12 +213,11 @@ public class Referee extends AbstractReferee {
         }
 
         String below_cell_state = GRID[next_y][x];
-        if(below_cell_state.equals("-")) { // case empty
-            move_circle(player_id, y, x, "DOWN", false);
-        }
-        else if(cell_has_player(below_cell_state)){
+        if(cell_has_player(below_cell_state)){
             single_move_down(below_cell_state, y + 1, x);
             single_move_down(player_id, y, x);
+        } else {
+            move_circle(player_id, y, x, "DOWN", below_cell_state.equals("x"));
         }
 
         return true;
@@ -285,19 +283,21 @@ public class Referee extends AbstractReferee {
 
     private void find_empty_lines() {
         boolean line_to_remove = true;
+        boolean dead_line = false;
         // lines from the top
         for(int i=0; i<HEIGHT; i++) {
             line_to_remove = true;
             for(int j=0; j<WIDTH; j++) {
                 String cell_value = GRID[i][j];
-                if(cell_value.equals("x") || cell_has_player(cell_value)) {
+                dead_line = cell_value.equals("x");
+                if(dead_line || cell_has_player(cell_value)) {
                     line_to_remove = false;
                     break;
                 }
             }
             if(line_to_remove) {
                 remove_line(i);
-            } else {
+            } else if(!dead_line) {
                 break;
             }
         }
@@ -306,25 +306,26 @@ public class Referee extends AbstractReferee {
             line_to_remove = true;
             for(int j=0; j<WIDTH; j++) {
                 String cell_value = GRID[i][j];
-                if(cell_value.equals("x") || cell_has_player(cell_value)) {
+                dead_line = cell_value.equals("x");
+                if(dead_line || cell_has_player(cell_value)) {
                     line_to_remove = false;
                     break;
                 }
             }
             if(line_to_remove) {
                 remove_line(i);
-            } else {
+            } else if(!dead_line) {
                 break;
             }
         }
     }
 
     private void remove_line(int line_index) {
-        gameManager.addToGameSummary(String.format("Line to remove: %s", line_index));
         // TODO: Animation
         for(int i=0; i<WIDTH; i++) {
             Sprite tile = TILES[line_index][i];
             tile.setAlpha(0);
+            GRID[line_index][i] = "x";
         }
     }
 
