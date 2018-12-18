@@ -282,42 +282,38 @@ public class Referee extends AbstractReferee {
     }
 
     private void find_empty_lines() {
-        boolean line_to_remove = true;
-        boolean dead_line = false;
         // lines from the top
         for(int i=0; i<HEIGHT; i++) {
-            line_to_remove = true;
-            for(int j=0; j<WIDTH; j++) {
-                String cell_value = GRID[i][j];
-                dead_line = cell_value.equals("x");
-                if(dead_line || cell_has_player(cell_value)) {
-                    line_to_remove = false;
-                    break;
-                }
-            }
-            if(line_to_remove) {
-                remove_line(i);
-            } else if(!dead_line) {
+            if(!checkline(i)) {
                 break;
             }
         }
         // lines from the bottom
         for(int i=HEIGHT-1; i>=0; i--) {
-            line_to_remove = true;
-            for(int j=0; j<WIDTH; j++) {
-                String cell_value = GRID[i][j];
-                dead_line = cell_value.equals("x");
-                if(dead_line || cell_has_player(cell_value)) {
-                    line_to_remove = false;
-                    break;
-                }
-            }
-            if(line_to_remove) {
-                remove_line(i);
-            } else if(!dead_line) {
+            if(!checkline(i)) {
                 break;
             }
         }
+    }
+
+    private boolean checkline(int line_index) {
+        boolean line_to_remove = true;
+        boolean dead_line = false;
+        for(int j=0; j<WIDTH; j++) {
+            String cell_value = GRID[line_index][j];
+            dead_line = cell_value.equals("x");
+            if(dead_line || cell_has_player(cell_value)) {
+                line_to_remove = false;
+                break;
+            }
+        }
+        if(line_to_remove) {
+            remove_line(line_index);
+        } else if(!dead_line) {
+            return false;
+        }
+
+        return true;
     }
 
     private void remove_line(int line_index) {
