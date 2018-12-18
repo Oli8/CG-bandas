@@ -6,6 +6,7 @@ import com.codingame.gameengine.core.GameManager;
 import com.codingame.gameengine.core.MultiplayerGameManager;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.codingame.gameengine.module.entities.Circle;
+import com.codingame.gameengine.module.entities.Sprite;
 import com.google.inject.Inject;
 
 import java.util.Arrays;
@@ -19,9 +20,8 @@ public class Referee extends AbstractReferee {
     private static final int HEIGHT = 6;
     private static final String[][] GRID = new String[HEIGHT][WIDTH];
     private static final Circle[][] PAWNS = new Circle[HEIGHT][WIDTH];
+    private static final Sprite[][] TILES = new Sprite[HEIGHT][WIDTH];
     private static final int CELL_SIZE = 100;
-    private static final int LINE_WIDTH = 5;
-    private static final int LINE_COLOR = 0x2ecc71;
     private static final int[] PLAYER_COLOR= {0xf88379, 0x3498db};
     private static final int PAWN_RADIUS = 30;
     private static final int CANVAS_WIDTH = 1920;
@@ -57,7 +57,7 @@ public class Referee extends AbstractReferee {
         for(int i=0; i<HEIGHT; i++){
             for(int j=0; j<WIDTH; j++){
                 // Draw Tile
-                graphicEntityModule.createSprite()
+                TILES[i][j] = graphicEntityModule.createSprite()
                         .setX(start_x +(CELL_SIZE * j))
                         .setY(start_y)
                         .setImage("medievalTile_27.png")
@@ -321,6 +321,11 @@ public class Referee extends AbstractReferee {
 
     private void remove_line(int line_index) {
         gameManager.addToGameSummary(String.format("Line to remove: %s", line_index));
+        // TODO: Animation
+        for(int i=0; i<WIDTH; i++) {
+            Sprite tile = TILES[line_index][i];
+            tile.setAlpha(0);
+        }
     }
 
     private boolean checkWinner() {
