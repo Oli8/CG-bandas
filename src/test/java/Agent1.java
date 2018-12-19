@@ -5,6 +5,7 @@ public class Agent1 {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
+        final int MY_ID = scanner.nextInt();
         while (true) {
             // String input = scanner.nextLine();
             String[] directions = {"UP", "RIGHT", "DOWN", "LEFT"};

@@ -48,6 +48,11 @@ public class Referee extends AbstractReferee {
     public void init() {
         addPawns();
         drawGrid();
+
+        // Send player id
+        for (Player player : gameManager.getPlayers()) {
+            player.sendInputLine(String.format("%d", player.getIndex()));
+        }
     }
 
     private void drawGrid() {
