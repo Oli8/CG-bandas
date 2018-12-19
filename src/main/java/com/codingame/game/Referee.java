@@ -142,6 +142,7 @@ public class Referee extends AbstractReferee {
 
         checkWinner();
         find_empty_lines();
+        find_empty_columns();
     }
 
     private void handlePlayerOutput(String output, String player_id) {
@@ -281,6 +282,57 @@ public class Referee extends AbstractReferee {
         return true;
     }
 
+    private void find_empty_columns() {
+        // columns from the top
+        for(int i=0; i<WIDTH; i++) {
+            if(!checkColumn(i)) {
+                break;
+            }
+        }
+        // columns from the bottom
+        for(int i=WIDTH-1; i>=0; i--) {
+            if(!checkColumn(i)) {
+                break;
+            }
+        }
+    }
+
+    private boolean checkColumn(int column_index) {
+        // We may have mixed line ("x" + "-") to remove !
+        boolean column_to_remove = true;
+        boolean dead_column = true;
+        for(int j=0; j<HEIGHT; j++) {
+            String cell_value = GRID[j][column_index];
+            if(!cell_value.equals("x")) {
+                dead_column = false;
+            }
+            if(cell_has_player(cell_value)) {
+                column_to_remove = false;
+                break;
+            }
+        }
+        if(column_to_remove) {
+            remove_column(column_index);
+        } else if(!dead_column) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private void remove_column(int column_index) {
+        // TODO: Animation
+        gameManager.addToGameSummary(String.format("Col ro remove %s", column_index));
+        System.out.println("remove col");
+        /*
+        for(int i=0; i<HEIGHT; i++) {
+            Sprite tile = TILES[i][column_index];
+            tile.setAlpha(0);
+            GRID[i][column_index] = "x";
+        }
+        */
+    }
+
     private void find_empty_lines() {
         // lines from the top
         for(int i=0; i<HEIGHT; i++) {
@@ -297,6 +349,7 @@ public class Referee extends AbstractReferee {
     }
 
     private boolean checkline(int line_index) {
+        // We may have mixed line ("x" + "-") to remove !
         boolean line_to_remove = true;
         boolean dead_line = false;
         for(int j=0; j<WIDTH; j++) {
