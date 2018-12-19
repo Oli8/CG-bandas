@@ -141,7 +141,7 @@ public class Referee extends AbstractReferee {
                 player.getNicknameToken(), output));
 
         checkWinner();
-        // find_empty_lines();
+        find_empty_lines();
         find_empty_columns();
     }
 
@@ -348,8 +348,10 @@ public class Referee extends AbstractReferee {
         boolean dead_line = false;
         for(int j=0; j<WIDTH; j++) {
             String cell_value = GRID[line_index][j];
-            dead_line = cell_value.equals("x");
-            if(dead_line || cell_has_player(cell_value)) {
+            if(!cell_value.equals("x")) {
+                dead_line = false;
+            }
+            if(cell_has_player(cell_value)) {
                 line_to_remove = false;
                 break;
             }
