@@ -49,9 +49,23 @@ public class Referee extends AbstractReferee {
         addPawns();
         drawGrid();
 
-        // Send player id
         for (Player player : gameManager.getPlayers()) {
+            // Send player id
             player.sendInputLine(String.format("%d", player.getIndex()));
+            graphicEntityModule.createText(player.getNicknameToken())
+                    .setX(180 + (player.getIndex() % 2) * 1400)
+                    .setY(50 + 100 * (player.getIndex() / 2))
+                    .setZIndex(20)
+                    .setFontSize(90)
+                    .setFillColor(player.getColorToken())
+                    .setAnchor(0);
+
+            graphicEntityModule.createSprite()
+                    .setX(100 + (player.getIndex() % 2) * 1400)
+                    .setY(90 + 100 * (player.getIndex() / 2))
+                    .setZIndex(20)
+                    .setImage(player.getAvatarToken())
+                    .setAnchor(0.5);
         }
     }
 
