@@ -141,7 +141,7 @@ public class Referee extends AbstractReferee {
                 player.getNicknameToken(), output));
 
         checkWinner();
-        find_empty_lines();
+        // find_empty_lines();
         find_empty_columns();
     }
 
@@ -242,12 +242,11 @@ public class Referee extends AbstractReferee {
         }
 
         String right_cell_state = GRID[y][next_x];
-        if(right_cell_state.equals("-")) { // case empty
-            move_circle(player_id, y, x, "RIGHT", false);
-        }
-        else if(cell_has_player(right_cell_state)){
+        if(cell_has_player(right_cell_state)) {
             single_move_right(right_cell_state, y, x + 1);
             single_move_right(player_id, y, x);
+        } else {
+            move_circle(player_id, y, x, "RIGHT", right_cell_state.equals("x"));
         }
 
         return true;
@@ -271,12 +270,11 @@ public class Referee extends AbstractReferee {
         }
 
         String left_cell_state = GRID[y][next_x];
-        if(left_cell_state.equals("-")) { // case empty
-            move_circle(player_id, y, x, "LEFT", false);
-        }
-        else if(cell_has_player(left_cell_state)){
+        if(cell_has_player(left_cell_state)) {
             single_move_left(left_cell_state, y, x - 1);
             single_move_left(player_id, y, x);
+        } else {
+            move_circle(player_id, y, x, "LEFT", left_cell_state.equals("x"));
         }
 
         return true;
@@ -322,15 +320,11 @@ public class Referee extends AbstractReferee {
 
     private void remove_column(int column_index) {
         // TODO: Animation
-        gameManager.addToGameSummary(String.format("Col ro remove %s", column_index));
-        System.out.println("remove col");
-        /*
         for(int i=0; i<HEIGHT; i++) {
             Sprite tile = TILES[i][column_index];
             tile.setAlpha(0);
             GRID[i][column_index] = "x";
         }
-        */
     }
 
     private void find_empty_lines() {
