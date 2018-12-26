@@ -328,7 +328,7 @@ public class Referee extends AbstractReferee {
         }
         if(column_to_remove) {
             remove_column(column_index);
-        } else if(!dead_column) {
+        } else if(!dead_column) { // Player(s) found on the line / col
             return false;
         }
 
@@ -361,7 +361,7 @@ public class Referee extends AbstractReferee {
 
     private boolean checkline(int line_index) {
         boolean line_to_remove = true;
-        boolean dead_line = false;
+        boolean dead_line = true;
         for(int j=0; j<WIDTH; j++) {
             String cell_value = GRID[line_index][j];
             if(!cell_value.equals("x")) {
@@ -374,7 +374,7 @@ public class Referee extends AbstractReferee {
         }
         if(line_to_remove) {
             remove_line(line_index);
-        } else if(!dead_line) {
+        } else if(!dead_line) { // Player(s) found on the line / col
             return false;
         }
 
