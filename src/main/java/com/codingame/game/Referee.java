@@ -314,7 +314,6 @@ public class Referee extends AbstractReferee {
     }
 
     private boolean checkColumn(int column_index) {
-        // We may have mixed line ("x" + "-") to remove !
         boolean column_to_remove = true;
         boolean dead_column = true;
         for(int j=0; j<HEIGHT; j++) {
@@ -361,7 +360,6 @@ public class Referee extends AbstractReferee {
     }
 
     private boolean checkline(int line_index) {
-        // We may have mixed line ("x" + "-") to remove !
         boolean line_to_remove = true;
         boolean dead_line = false;
         for(int j=0; j<WIDTH; j++) {
