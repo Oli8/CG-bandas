@@ -22,7 +22,7 @@ public class Referee extends AbstractReferee {
     private static final Circle[][] PAWNS = new Circle[HEIGHT][WIDTH];
     private static final Sprite[][] TILES = new Sprite[HEIGHT][WIDTH];
     private static final int CELL_SIZE = 100;
-    private static final int[] PLAYER_COLOR= {0xf88379, 0x3498db};
+    private static final int[] PLAYER_COLOR = {0xf88379, 0x3498db};
     private static final int PAWN_RADIUS = 30;
     private static final int CANVAS_WIDTH = 1920;
     private static final int CANVAS_HEIGHT = 1080;
