@@ -141,9 +141,8 @@ public class Referee extends AbstractReferee {
                         player.getNicknameToken(), output));
                 deactivate_player(player, "Invalid action.");
                 return;
-            } else {
-                handlePlayerOutput(output, player_id);
             }
+            handlePlayerOutput(output, player_id);
         } catch (IndexOutOfBoundsException e) {
             gameManager.addToGameSummary(String.format("Player %s did not output anything",
                     player.getNicknameToken()));
