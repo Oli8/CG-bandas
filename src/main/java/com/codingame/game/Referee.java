@@ -50,8 +50,10 @@ public class Referee extends AbstractReferee {
         drawGrid();
 
         for (Player player : gameManager.getPlayers()) {
-            // Send player id
+            // Send player id, height and width
             player.sendInputLine(String.format("%d", player.getIndex()));
+            player.sendInputLine(String.format("%d", HEIGHT));
+            player.sendInputLine(String.format("%d", WIDTH));
             graphicEntityModule.createText(player.getNicknameToken())
                     .setX(180 + (player.getIndex() % 2) * 1400)
                     .setY(50 + 100 * (player.getIndex() / 2))

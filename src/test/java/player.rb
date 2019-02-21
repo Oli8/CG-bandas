@@ -1,14 +1,23 @@
 STDOUT.sync = true
 
-def e(var)
+def e(*var)
   STDERR.puts var
 end
 
 DIRECTIONS = ["UP", "RIGHT", "DOWN", "LEFT"]
 
-loop do
-  # TODO: get input
+MY_ID = gets.to_i
+HEIGHT = gets.to_i
+WIDTH = gets.to_i
 
-  # e("ruby player")
+$grid = []
+
+loop do
+  map = []
+  HEIGHT.times do
+    line = gets.chomp
+    map << line
+  end
+  e(map)
   puts DIRECTIONS.sample
 end
