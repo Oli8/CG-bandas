@@ -1,0 +1,19 @@
+read myId:int
+read height:int
+read width:int
+
+gameloop
+loop height read line:string
+write "UP"
+
+STATEMENT
+Try to survive by not falling off
+
+INPUT
+myId: Your id, 0 or 1
+height: height of the grid
+width: width of the grid
+line: string describing tiles of a line of the grid containing values: 0 or 1: player with this id, '-': empty, 'x': hole
+
+OUTPUT
+UP | RIGHT | DOWN | LEFT
