@@ -297,13 +297,13 @@ public class Referee extends AbstractReferee {
     }
 
     private void find_empty_columns() {
-        // columns from the top
+        // columns from the left
         for(int i=0; i<WIDTH; i++) {
             if(!checkColumn(i)) {
                 break;
             }
         }
-        // columns from the bottom
+        // columns from the right
         for(int i=WIDTH-1; i>=0; i--) {
             if(!checkColumn(i)) {
                 break;
