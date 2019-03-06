@@ -445,6 +445,7 @@ public class Referee extends AbstractReferee {
         }
 
         if(remove_after) {
+            pawn.setImage(String.format("pawn_%s_hurt.png", player_id));
             graphicEntityModule.commitEntityState(0.7, pawn);
             pawn.setAlpha(0);
         } else {
