@@ -5,7 +5,6 @@ import com.codingame.gameengine.core.AbstractReferee;
 import com.codingame.gameengine.core.GameManager;
 import com.codingame.gameengine.core.MultiplayerGameManager;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
-import com.codingame.gameengine.module.entities.Circle;
 import com.codingame.gameengine.module.entities.Sprite;
 import com.google.inject.Inject;
 
@@ -19,11 +18,9 @@ public class Referee extends AbstractReferee {
     private static final int WIDTH = 6;
     private static final int HEIGHT = 6;
     private static final String[][] GRID = new String[HEIGHT][WIDTH];
-    private static final Circle[][] PAWNS = new Circle[HEIGHT][WIDTH];
+    private static final Sprite[][] PAWNS = new Sprite[HEIGHT][WIDTH];
     private static final Sprite[][] TILES = new Sprite[HEIGHT][WIDTH];
     private static final int CELL_SIZE = 100;
-    private static final int[] PLAYER_COLOR = {0xf88379, 0x3498db};
-    private static final int PAWN_RADIUS = 30;
     private static final int CANVAS_WIDTH = 1920;
     private static final int CANVAS_HEIGHT = 1080;
     private static  final String[] DIRECTIONS = {"UP", "RIGHT", "DOWN", "LEFT"};
@@ -97,12 +94,11 @@ public class Referee extends AbstractReferee {
         }
     }
 
-    private Circle drawPawn(int x, int y, int player_id) {
-        return graphicEntityModule.createCircle()
-                .setRadius(PAWN_RADIUS)
-                .setFillColor(PLAYER_COLOR[player_id])
-                .setX(x)
-                .setY(y)
+    private Sprite drawPawn(int x, int y, int player_id) {
+        return graphicEntityModule.createSprite()
+                .setX(x-33)
+                .setY(y-46)
+                .setImage(String.format("pawn_%d.png", player_id))
                 .setZIndex(2);
     }
 
@@ -431,7 +427,7 @@ public class Referee extends AbstractReferee {
     }
 
     private void move_circle(String player_id, int y, int x, String direction, boolean remove_after) {
-        Circle pawn = PAWNS[y][x];
+        Sprite pawn = PAWNS[y][x];
 
         switch (direction) {
             case "UP":
@@ -449,6 +445,7 @@ public class Referee extends AbstractReferee {
         }
 
         if(remove_after) {
+            pawn.setImage(String.format("pawn_%s_hurt.png", player_id));
             graphicEntityModule.commitEntityState(0.7, pawn);
             pawn.setAlpha(0);
         } else {
