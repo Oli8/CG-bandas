@@ -43,6 +43,7 @@ public class Referee extends AbstractReferee {
 
     @Override
     public void init() {
+        gameManager.setTurnMaxTime(100);
         addPawns();
         drawGrid();
 
