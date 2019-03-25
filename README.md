@@ -1,6 +1,8 @@
 # CG-Bandas  
 
-An AI multiplayer game made with the Codingame SDK
+An AI multiplayer game made with the Codingame SDK  
+Based on Frutiparc Frutibandas game  
+Assets by [Kenney Vleugels](http://www.kenney.nl)  
 
 ## Start
 
