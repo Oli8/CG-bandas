@@ -198,7 +198,7 @@ public class Referee extends AbstractReferee {
     private boolean single_move_up(String player_id, int y, int x) {
         int next_y = y - 1;
         if(next_y < 0) { // player moves out of the map
-            move_circle(player_id, y, x, "UP", true);
+            move_player(player_id, y, x, "UP", true);
             return true;
         }
 
@@ -207,7 +207,7 @@ public class Referee extends AbstractReferee {
             single_move_up(above_cell_state, y - 1, x);
             single_move_up(player_id, y, x);
         } else {
-            move_circle(player_id, y, x, "UP", above_cell_state.equals("x"));
+            move_player(player_id, y, x, "UP", above_cell_state.equals("x"));
         }
 
         return true;
@@ -226,7 +226,7 @@ public class Referee extends AbstractReferee {
     private boolean single_move_down(String player_id, int y, int x) {
         int next_y = y + 1;
         if(next_y > HEIGHT - 1) { // player moves out of the map
-            move_circle(player_id, y, x, "DOWN", true);
+            move_player(player_id, y, x, "DOWN", true);
             return true;
         }
 
@@ -235,7 +235,7 @@ public class Referee extends AbstractReferee {
             single_move_down(below_cell_state, y + 1, x);
             single_move_down(player_id, y, x);
         } else {
-            move_circle(player_id, y, x, "DOWN", below_cell_state.equals("x"));
+            move_player(player_id, y, x, "DOWN", below_cell_state.equals("x"));
         }
 
         return true;
@@ -254,7 +254,7 @@ public class Referee extends AbstractReferee {
     private boolean single_move_right(String player_id, int y, int x) {
         int next_x = x + 1;
         if(next_x > WIDTH - 1) { // player moves out of the map
-            move_circle(player_id, y, x, "RIGHT", true);
+            move_player(player_id, y, x, "RIGHT", true);
             return true;
         }
 
@@ -263,7 +263,7 @@ public class Referee extends AbstractReferee {
             single_move_right(right_cell_state, y, x + 1);
             single_move_right(player_id, y, x);
         } else {
-            move_circle(player_id, y, x, "RIGHT", right_cell_state.equals("x"));
+            move_player(player_id, y, x, "RIGHT", right_cell_state.equals("x"));
         }
 
         return true;
@@ -282,7 +282,7 @@ public class Referee extends AbstractReferee {
     private boolean single_move_left(String player_id, int y, int x) {
         int next_x = x - 1;
         if(next_x < 0) { // player moves out of the map
-            move_circle(player_id, y, x, "LEFT", true);
+            move_player(player_id, y, x, "LEFT", true);
             return true;
         }
 
@@ -291,7 +291,7 @@ public class Referee extends AbstractReferee {
             single_move_left(left_cell_state, y, x - 1);
             single_move_left(player_id, y, x);
         } else {
-            move_circle(player_id, y, x, "LEFT", left_cell_state.equals("x"));
+            move_player(player_id, y, x, "LEFT", left_cell_state.equals("x"));
         }
 
         return true;
@@ -427,7 +427,7 @@ public class Referee extends AbstractReferee {
         return cell_value.equals("0") || cell_value.equals("1");
     }
 
-    private void move_circle(String player_id, int y, int x, String direction, boolean remove_after) {
+    private void move_player(String player_id, int y, int x, String direction, boolean remove_after) {
         Sprite pawn = PAWNS[y][x];
 
         switch (direction) {
