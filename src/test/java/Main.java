@@ -10,7 +10,8 @@ public class Main {
 
         // Adds as many player as you need to test your game
         gameRunner.addAgent(Agent1.class);
-        gameRunner.addAgent("ruby /home/olivier/work/CG-bandas/src/test/java/player.rb");
+        gameRunner.addAgent(Agent2.class);
+        // gameRunner.addAgent("ruby /CG-bandas/src/test/java/player.rb");
 
         // Another way to add a player
         // gameRunner.addAgent("python3 /home/user/player.py");

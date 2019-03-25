@@ -7,7 +7,6 @@ public class Agent1 {
 
         final int MY_ID = scanner.nextInt();
         while (true) {
-            // String input = scanner.nextLine();
             String[] directions = {"UP", "RIGHT", "DOWN", "LEFT"};
             System.out.println(
                     directions[(new Random()).nextInt(directions.length)]);
