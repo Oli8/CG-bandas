@@ -16,4 +16,4 @@ An AI multiplayer game made with the Codingame SDK
   * Eclipse: Right click on Main.java > Run As > Java Application  
   * IntelliJ IDEA: Right click on Main > 'Run Main.main()'
 
-This will launch a web server to serve a page with the viewer of the game.  
+This will launch a web server to serve a page with the viewer of the game to http://localhost:8888  
