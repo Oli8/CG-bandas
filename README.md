@@ -4,6 +4,8 @@ An AI multiplayer game made with the Codingame SDK
 Based on Frutiparc Frutibandas game  
 Assets by [Kenney Vleugels](http://www.kenney.nl)  
 
+##### You can find the rules in config/statement_en.html
+
 ## Start
 
 * `git clone git@gitlab.com:Oli8/cg-bandas.git`  
