@@ -4,7 +4,7 @@ read width:int
 
 gameloop
 loop height read line:string(11)
-write "UP"
+write UP
 
 STATEMENT
 Try to survive by not falling off
