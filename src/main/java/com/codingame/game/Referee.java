@@ -17,7 +17,7 @@ public class Referee extends AbstractReferee {
 
     private static final int WIDTH = 6;
     private static final int HEIGHT = 6;
-    private static final int MAX_TURNS = 400;
+    private static final int MAX_TURNS = 200;
     private static final String[][] GRID = new String[HEIGHT][WIDTH];
     private static final Sprite[][] PAWNS = new Sprite[HEIGHT][WIDTH];
     private static final Sprite[][] TILES = new Sprite[HEIGHT][WIDTH];
@@ -162,9 +162,27 @@ public class Referee extends AbstractReferee {
         checkWinner();
         find_empty_lines();
         find_empty_columns();
+        // If we reach max turns, set the winner to the player with the most pawns left
+        if(turn == MAX_TURNS - 1) {
+            int[] playersPawnCount = countPlayersPawn(true);
+            System.out.println(String.format(
+                    "Joueur 0: %d | Joueur 1: %d"
+            , playersPawnCount[0], playersPawnCount[1]));
+            Player winner;
+            if(playersPawnCount[0] > playersPawnCount[1]){
+                winner = gameManager.getPlayer(0);
+            } else if(playersPawnCount[1] > playersPawnCount[0]) {
+                winner = gameManager.getPlayer(1);
+            } else {
+                gameManager.addToGameSummary("It's a tie !");
+                gameManager.endGame();
+                return;
+            }
 
-        if(turn == MAX_TURNS) {
-
+            gameManager.addToGameSummary(GameManager.formatSuccessMessage(
+                    winner.getNicknameToken() + " won!"));
+            winner.setScore(1);
+            gameManager.endGame();
         }
     }
 
