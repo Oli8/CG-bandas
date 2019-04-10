@@ -17,6 +17,7 @@ public class Referee extends AbstractReferee {
 
     private static final int WIDTH = 6;
     private static final int HEIGHT = 6;
+    private static final int MAX_TURNS = 200;
     private static final String[][] GRID = new String[HEIGHT][WIDTH];
     private static final Sprite[][] PAWNS = new Sprite[HEIGHT][WIDTH];
     private static final Sprite[][] TILES = new Sprite[HEIGHT][WIDTH];
@@ -44,6 +45,7 @@ public class Referee extends AbstractReferee {
     @Override
     public void init() {
         gameManager.setTurnMaxTime(100);
+        gameManager.setMaxTurns(MAX_TURNS);
         addPawns();
         drawGrid();
 
@@ -160,6 +162,19 @@ public class Referee extends AbstractReferee {
         checkWinner();
         find_empty_lines();
         find_empty_columns();
+        // If we reach max turns, set the winner to the player with the most pawns left
+        if(turn == MAX_TURNS - 1) {
+            int[] playersPawnCount = countPlayersPawn(true);
+
+            if(playersPawnCount[0] > playersPawnCount[1]){
+                setWinner(0);
+            } else if(playersPawnCount[1] > playersPawnCount[0]) {
+                setWinner(1);
+            } else {
+                gameManager.addToGameSummary("It's a tie !");
+                gameManager.endGame();
+            }
+        }
     }
 
     private void handlePlayerOutput(String output, String player_id) {
@@ -389,37 +404,49 @@ public class Referee extends AbstractReferee {
         }
     }
 
-    private boolean checkWinner() {
-        int player_a = 0;
-        int player_b = 0;
+    private int[] countPlayersPawn(boolean max_turns_reached) {
+        int playerA = 0;
+        int playerB = 0;
 
         for (int y = 0; y < HEIGHT; y++) {
             for(int col = 0; col < WIDTH; col++) {
-                String cell_state = GRID[y][col];
-                if(cell_state.equals("0")){
-                    player_a++;
-                } else if(cell_state.equals("1")){
-                    player_b++;
+                String cellState = GRID[y][col];
+                if(cellState.equals("0")){
+                    playerA++;
+                } else if(cellState.equals("1")){
+                    playerB++;
                 }
 
-                if(player_a > 0 && player_b > 0) { // Game still in progress
-                    return false;
+                if(!max_turns_reached && playerA > 0 && playerB > 0) { // Game still in progress
+                    break;
                 }
             }
         }
 
-        Player winner;
-        if(player_a == 0){
-            winner = gameManager.getPlayer(1);
+        return new int[] {playerA, playerB};
+    }
+
+    private boolean checkWinner() {
+        int[] playersPawnCount = countPlayersPawn(false);
+
+        if(playersPawnCount[0] == 0){
+            setWinner(1);
+        } else if(playersPawnCount[1] == 0) {
+            setWinner(0);
         } else {
-            winner = gameManager.getPlayer(0);
+            return false;
         }
 
+        return true;
+    }
+
+    private void setWinner(int playerId) {
+        Player winner;
+        winner = gameManager.getPlayer(playerId);
         gameManager.addToGameSummary(GameManager.formatSuccessMessage(
                 winner.getNicknameToken() + " won!"));
         winner.setScore(1);
         gameManager.endGame();
-        return true;
     }
 
     private boolean cell_has_player(String cell_value) {
