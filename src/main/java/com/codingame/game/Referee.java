@@ -29,17 +29,10 @@ public class Referee extends AbstractReferee {
     static
     {
         NEXT_POS = new HashMap<String, int[]>();
-        int[] up_next_pos = {-1, 0};
-        NEXT_POS.put("UP", up_next_pos);
-
-        int[] down_next_pos = {1, 0};
-        NEXT_POS.put("DOWN", down_next_pos);
-
-        int[] right_next_pos = {0, 1};
-        NEXT_POS.put("RIGHT", right_next_pos);
-
-        int[] left_next_pos = {0, -1};
-        NEXT_POS.put("LEFT", left_next_pos);
+        NEXT_POS.put("UP", new int[] {-1, 0});
+        NEXT_POS.put("DOWN", new int[] {1, 0});
+        NEXT_POS.put("RIGHT", new int[] {0, 1});
+        NEXT_POS.put("LEFT", new int[] {0, -1});
     }
 
     @Override
@@ -72,63 +65,63 @@ public class Referee extends AbstractReferee {
     }
 
     private void drawGrid() {
-        int start_y = Math.round((CANVAS_HEIGHT - (HEIGHT * CELL_SIZE)) / 2);
-        int start_x = Math.round((CANVAS_WIDTH - (WIDTH * CELL_SIZE)) / 2);
+        int startY = Math.round((CANVAS_HEIGHT - (HEIGHT * CELL_SIZE)) / 2);
+        int startX = Math.round((CANVAS_WIDTH - (WIDTH * CELL_SIZE)) / 2);
 
         for(int i=0; i<HEIGHT; i++){
             for(int j=0; j<WIDTH; j++){
                 // Draw Tile
                 TILES[i][j] = graphicEntityModule.createSprite()
-                        .setX(start_x +(CELL_SIZE * j))
-                        .setY(start_y)
+                        .setX(startX +(CELL_SIZE * j))
+                        .setY(startY)
                         .setImage("medievalTile_27.png")
                         .setScale(1.5625);
-                String cell_value = GRID[i][j];
+                String cellValue = GRID[i][j];
                 // Draw Pawn
-                if(cell_has_player(cell_value)){
+                if(cellHasPlayer(cellValue)){
                     PAWNS[i][j] = drawPawn(
-                            start_x +(CELL_SIZE * j) + (CELL_SIZE / 2),
-                            start_y + (CELL_SIZE / 2),
-                            Integer.parseInt(cell_value)
+                            startX +(CELL_SIZE * j) + (CELL_SIZE / 2),
+                            startY + (CELL_SIZE / 2),
+                            Integer.parseInt(cellValue)
                     );
                 }
             }
-            start_y += CELL_SIZE;
+            startY += CELL_SIZE;
         }
     }
 
-    private Sprite drawPawn(int x, int y, int player_id) {
+    private Sprite drawPawn(int x, int y, int playerId) {
         return graphicEntityModule.createSprite()
                 .setX(x-33)
                 .setY(y-46)
-                .setImage(String.format("pawn_%d.png", player_id))
+                .setImage(String.format("pawn_%d.png", playerId))
                 .setZIndex(2);
     }
 
     private void addPawns() {
-        int pawns_per_player = WIDTH * HEIGHT / 2;
-        int[] pawns = {pawns_per_player, pawns_per_player};
+        int pawnsPerPlayer = WIDTH * HEIGHT / 2;
+        int[] pawns = {pawnsPerPlayer, pawnsPerPlayer};
 
         for(int i=0; i<HEIGHT; i++){
             for(int j=0; j<WIDTH; j++){
-                int player_index;
+                int playerIndex;
                 if(pawns[0] == 0){
-                    player_index = 1;
+                    playerIndex = 1;
                 } else if (pawns[1] == 0){
-                    player_index = 0;
+                    playerIndex = 0;
                 } else {
-                    player_index = (int) Math.round(Math.random());
+                    playerIndex = (int) Math.round(Math.random());
                 }
-                pawns[player_index] -= 1;
-                GRID[i][j] = Integer.toString(player_index);
+                pawns[playerIndex] -= 1;
+                GRID[i][j] = Integer.toString(playerIndex);
             }
         }
     }
 
     @Override
     public void gameTurn(int turn) {
-        String player_id = Integer.toString(turn % gameManager.getPlayerCount());
-        Player player = gameManager.getPlayer(Integer.parseInt(player_id));
+        String playerId = Integer.toString(turn % gameManager.getPlayerCount());
+        Player player = gameManager.getPlayer(Integer.parseInt(playerId));
         String output = "";
 
         sendInputs(player);
@@ -140,19 +133,19 @@ public class Referee extends AbstractReferee {
             if(!Arrays.asList(DIRECTIONS).contains(output)){ // invalid ouput
                 gameManager.addToGameSummary(String.format("Player %s played invalid output %s",
                         player.getNicknameToken(), output));
-                deactivate_player(player, "Invalid action.");
+                deactivatePlayer(player, "Invalid action.");
                 return;
             }
-            handlePlayerOutput(output, player_id);
+            handlePlayerOutput(output, playerId);
         } catch (IndexOutOfBoundsException e) {
             gameManager.addToGameSummary(String.format("Player %s did not output anything",
                     player.getNicknameToken()));
-            deactivate_player(player, "No output");
+            deactivatePlayer(player, "No output");
             return;
         } catch (TimeoutException e) {
             gameManager.addToGameSummary(GameManager.formatErrorMessage(
                     player.getNicknameToken() + " timeout!"));
-            deactivate_player(player, "Timeout");
+            deactivatePlayer(player, "Timeout");
             return;
         }
 
@@ -160,8 +153,8 @@ public class Referee extends AbstractReferee {
                 player.getNicknameToken(), output));
 
         checkWinner();
-        find_empty_lines();
-        find_empty_columns();
+        findEmptyLines();
+        findEmptyColumns();
         // If we reach max turns, set the winner to the player with the most pawns left
         if(turn == MAX_TURNS - 1) {
             int[] playersPawnCount = countPlayersPawn(true);
@@ -177,19 +170,19 @@ public class Referee extends AbstractReferee {
         }
     }
 
-    private void handlePlayerOutput(String output, String player_id) {
+    private void handlePlayerOutput(String output, String playerId) {
         switch(output) {
             case "UP" :
-                move_up(player_id);
+                moveUp(playerId);
                 break;
             case "DOWN":
-                move_down(player_id);
+                moveDown(playerId);
                 break;
             case "RIGHT":
-                move_right(player_id);
+                moveRight(playerId);
                 break;
             case "LEFT":
-                move_left(player_id);
+                moveLeft(playerId);
                 break;
         }
     }
@@ -200,119 +193,119 @@ public class Referee extends AbstractReferee {
         }
     }
 
-    private void move_up(String player_id) {
+    private void moveUp(String playerId) {
         for(int col=0; col<WIDTH; col++) {
             for (int y = 0; y < HEIGHT; y++) {
-                if (GRID[y][col].equals(player_id)) {
-                    single_move_up(player_id, y, col);
+                if (GRID[y][col].equals(playerId)) {
+                    singleMoveUp(playerId, y, col);
                 }
             }
         }
     }
 
-    private boolean single_move_up(String player_id, int y, int x) {
-        int next_y = y - 1;
-        if(next_y < 0) { // player moves out of the map
-            move_player(player_id, y, x, "UP", true);
+    private boolean singleMoveUp(String playerId, int y, int x) {
+        int nextY = y - 1;
+        if(nextY < 0) { // player moves out of the map
+            movePlayer(playerId, y, x, "UP", true);
             return true;
         }
 
-        String above_cell_state = GRID[next_y][x];
-        if(cell_has_player(above_cell_state)){
-            single_move_up(above_cell_state, y - 1, x);
-            single_move_up(player_id, y, x);
+        String aboveCellState = GRID[nextY][x];
+        if(cellHasPlayer(aboveCellState)){
+            singleMoveUp(aboveCellState, y - 1, x);
+            singleMoveUp(playerId, y, x);
         } else {
-            move_player(player_id, y, x, "UP", above_cell_state.equals("x"));
+            movePlayer(playerId, y, x, "UP", aboveCellState.equals("x"));
         }
 
         return true;
     }
 
-    private void move_down(String player_id) {
+    private void moveDown(String playerId) {
         for(int col=0; col<WIDTH; col++) {
             for (int y = HEIGHT-1; y >= 0; y--) {
-                if (GRID[y][col].equals(player_id)) {
-                    single_move_down(player_id, y, col);
+                if (GRID[y][col].equals(playerId)) {
+                    singleMoveDown(playerId, y, col);
                 }
             }
         }
     }
 
-    private boolean single_move_down(String player_id, int y, int x) {
-        int next_y = y + 1;
-        if(next_y > HEIGHT - 1) { // player moves out of the map
-            move_player(player_id, y, x, "DOWN", true);
+    private boolean singleMoveDown(String playerId, int y, int x) {
+        int nextY = y + 1;
+        if(nextY > HEIGHT - 1) { // player moves out of the map
+            movePlayer(playerId, y, x, "DOWN", true);
             return true;
         }
 
-        String below_cell_state = GRID[next_y][x];
-        if(cell_has_player(below_cell_state)){
-            single_move_down(below_cell_state, y + 1, x);
-            single_move_down(player_id, y, x);
+        String belowCellState = GRID[nextY][x];
+        if(cellHasPlayer(belowCellState)){
+            singleMoveDown(belowCellState, y + 1, x);
+            singleMoveDown(playerId, y, x);
         } else {
-            move_player(player_id, y, x, "DOWN", below_cell_state.equals("x"));
+            movePlayer(playerId, y, x, "DOWN", belowCellState.equals("x"));
         }
 
         return true;
     }
 
-    private void move_right(String player_id) {
+    private void moveRight(String playerId) {
         for (int y = 0; y < HEIGHT; y++) {
             for(int col = WIDTH - 1; col>=0; col--) {
-                if(GRID[y][col].equals(player_id)){
-                    single_move_right(player_id, y, col);
+                if(GRID[y][col].equals(playerId)){
+                    singleMoveRight(playerId, y, col);
                 }
             }
         }
     }
 
-    private boolean single_move_right(String player_id, int y, int x) {
-        int next_x = x + 1;
-        if(next_x > WIDTH - 1) { // player moves out of the map
-            move_player(player_id, y, x, "RIGHT", true);
+    private boolean singleMoveRight(String playerId, int y, int x) {
+        int nextX = x + 1;
+        if(nextX > WIDTH - 1) { // player moves out of the map
+            movePlayer(playerId, y, x, "RIGHT", true);
             return true;
         }
 
-        String right_cell_state = GRID[y][next_x];
-        if(cell_has_player(right_cell_state)) {
-            single_move_right(right_cell_state, y, x + 1);
-            single_move_right(player_id, y, x);
+        String rightCellState = GRID[y][nextX];
+        if(cellHasPlayer(rightCellState)) {
+            singleMoveRight(rightCellState, y, x + 1);
+            singleMoveRight(playerId, y, x);
         } else {
-            move_player(player_id, y, x, "RIGHT", right_cell_state.equals("x"));
+            movePlayer(playerId, y, x, "RIGHT", rightCellState.equals("x"));
         }
 
         return true;
     }
 
-    private void move_left(String player_id) {
+    private void moveLeft(String playerId) {
         for (int y = 0; y < HEIGHT; y++) {
             for(int col = 0; col<WIDTH; col++) {
-                if(GRID[y][col].equals(player_id)){
-                    single_move_left(player_id, y, col);
+                if(GRID[y][col].equals(playerId)){
+                    singleMoveLeft(playerId, y, col);
                 }
             }
         }
     }
 
-    private boolean single_move_left(String player_id, int y, int x) {
-        int next_x = x - 1;
-        if(next_x < 0) { // player moves out of the map
-            move_player(player_id, y, x, "LEFT", true);
+    private boolean singleMoveLeft(String playerId, int y, int x) {
+        int nextX = x - 1;
+        if(nextX < 0) { // player moves out of the map
+            movePlayer(playerId, y, x, "LEFT", true);
             return true;
         }
 
-        String left_cell_state = GRID[y][next_x];
-        if(cell_has_player(left_cell_state)) {
-            single_move_left(left_cell_state, y, x - 1);
-            single_move_left(player_id, y, x);
+        String leftCellState = GRID[y][nextX];
+        if(cellHasPlayer(leftCellState)) {
+            singleMoveLeft(leftCellState, y, x - 1);
+            singleMoveLeft(playerId, y, x);
         } else {
-            move_player(player_id, y, x, "LEFT", left_cell_state.equals("x"));
+            movePlayer(playerId, y, x, "LEFT", leftCellState.equals("x"));
         }
 
         return true;
     }
 
-    private void find_empty_columns() {
+    private void findEmptyColumns() {
         // columns from the left
         for(int i=0; i<WIDTH; i++) {
             if(!checkColumn(i)) {
@@ -327,38 +320,38 @@ public class Referee extends AbstractReferee {
         }
     }
 
-    private boolean checkColumn(int column_index) {
-        boolean column_to_remove = true;
-        boolean dead_column = true;
+    private boolean checkColumn(int columnIndex) {
+        boolean columnToRemove = true;
+        boolean deadColumn = true;
         for(int j=0; j<HEIGHT; j++) {
-            String cell_value = GRID[j][column_index];
-            if(!cell_value.equals("x")) {
-                dead_column = false;
+            String cellValue = GRID[j][columnIndex];
+            if(!cellValue.equals("x")) {
+                deadColumn = false;
             }
-            if(cell_has_player(cell_value)) {
-                column_to_remove = false;
+            if(cellHasPlayer(cellValue)) {
+                columnToRemove = false;
                 break;
             }
         }
-        if(column_to_remove) {
-            remove_column(column_index);
-        } else if(!dead_column) { // Player(s) found on the line / col
+        if(columnToRemove) {
+            removeColumn(columnIndex);
+        } else if(!deadColumn) { // Player(s) found on the line / col
             return false;
         }
 
         return true;
     }
 
-    private void remove_column(int column_index) {
+    private void removeColumn(int columnIndex) {
         // TODO: Animation
         for(int i=0; i<HEIGHT; i++) {
-            Sprite tile = TILES[i][column_index];
+            Sprite tile = TILES[i][columnIndex];
             tile.setAlpha(0);
-            GRID[i][column_index] = "x";
+            GRID[i][columnIndex] = "x";
         }
     }
 
-    private void find_empty_lines() {
+    private void findEmptyLines() {
         // lines from the top
         for(int i=0; i<HEIGHT; i++) {
             if(!checkline(i)) {
@@ -373,38 +366,38 @@ public class Referee extends AbstractReferee {
         }
     }
 
-    private boolean checkline(int line_index) {
-        boolean line_to_remove = true;
-        boolean dead_line = true;
+    private boolean checkline(int lineIndex) {
+        boolean lineToRemove = true;
+        boolean deadLine = true;
         for(int j=0; j<WIDTH; j++) {
-            String cell_value = GRID[line_index][j];
-            if(!cell_value.equals("x")) {
-                dead_line = false;
+            String cellValue = GRID[lineIndex][j];
+            if(!cellValue.equals("x")) {
+                deadLine = false;
             }
-            if(cell_has_player(cell_value)) {
-                line_to_remove = false;
+            if(cellHasPlayer(cellValue)) {
+                lineToRemove = false;
                 break;
             }
         }
-        if(line_to_remove) {
-            remove_line(line_index);
-        } else if(!dead_line) { // Player(s) found on the line / col
+        if(lineToRemove) {
+            removeLine(lineIndex);
+        } else if(!deadLine) { // Player(s) found on the line / col
             return false;
         }
 
         return true;
     }
 
-    private void remove_line(int line_index) {
+    private void removeLine(int lineIndex) {
         // TODO: Animation
         for(int i=0; i<WIDTH; i++) {
-            Sprite tile = TILES[line_index][i];
+            Sprite tile = TILES[lineIndex][i];
             tile.setAlpha(0);
-            GRID[line_index][i] = "x";
+            GRID[lineIndex][i] = "x";
         }
     }
 
-    private int[] countPlayersPawn(boolean max_turns_reached) {
+    private int[] countPlayersPawn(boolean maxTurnsReached) {
         int playerA = 0;
         int playerB = 0;
 
@@ -417,7 +410,7 @@ public class Referee extends AbstractReferee {
                     playerB++;
                 }
 
-                if(!max_turns_reached && playerA > 0 && playerB > 0) { // Game still in progress
+                if(!maxTurnsReached && playerA > 0 && playerB > 0) { // Game still in progress
                     break;
                 }
             }
@@ -449,12 +442,12 @@ public class Referee extends AbstractReferee {
         gameManager.endGame();
     }
 
-    private boolean cell_has_player(String cell_value) {
+    private boolean cellHasPlayer(String cellValue) {
         // Check if a grid cell has a player on it
-        return cell_value.equals("0") || cell_value.equals("1");
+        return cellValue.equals("0") || cellValue.equals("1");
     }
 
-    private void move_player(String player_id, int y, int x, String direction, boolean remove_after) {
+    private void movePlayer(String playerId, int y, int x, String direction, boolean removeAfter) {
         Sprite pawn = PAWNS[y][x];
 
         switch (direction) {
@@ -472,21 +465,21 @@ public class Referee extends AbstractReferee {
                 break;
         }
 
-        if(remove_after) {
-            pawn.setImage(String.format("pawn_%s_hurt.png", player_id));
+        if(removeAfter) {
+            pawn.setImage(String.format("pawn_%s_hurt.png", playerId));
             graphicEntityModule.commitEntityState(0.7, pawn);
             pawn.setAlpha(0);
         } else {
-            int[] dir_next_pos = NEXT_POS.get(direction);
-            int[] next_pos_coord = {y+dir_next_pos[0], x+dir_next_pos[1]};
-            GRID[next_pos_coord[0]][next_pos_coord[1]] = player_id;
-            PAWNS[next_pos_coord[0]][next_pos_coord[1]] = pawn;
+            int[] dirNextPos = NEXT_POS.get(direction);
+            int[] nextPosCoord = {y+dirNextPos[0], x+dirNextPos[1]};
+            GRID[nextPosCoord[0]][nextPosCoord[1]] = playerId;
+            PAWNS[nextPosCoord[0]][nextPosCoord[1]] = pawn;
         }
         GRID[y][x] = "-";
         PAWNS[y][x] = null;
     }
 
-    private void deactivate_player(Player player, String reason) {
+    private void deactivatePlayer(Player player, String reason) {
         player.deactivate(reason);
         player.setScore(-1);
         gameManager.endGame();
