@@ -29,17 +29,10 @@ public class Referee extends AbstractReferee {
     static
     {
         NEXT_POS = new HashMap<String, int[]>();
-        int[] up_next_pos = {-1, 0};
-        NEXT_POS.put("UP", up_next_pos);
-
-        int[] down_next_pos = {1, 0};
-        NEXT_POS.put("DOWN", down_next_pos);
-
-        int[] right_next_pos = {0, 1};
-        NEXT_POS.put("RIGHT", right_next_pos);
-
-        int[] left_next_pos = {0, -1};
-        NEXT_POS.put("LEFT", left_next_pos);
+        NEXT_POS.put("UP", new int[] {-1, 0});
+        NEXT_POS.put("DOWN", new int[] {1, 0});
+        NEXT_POS.put("RIGHT", new int[] {0, 1});
+        NEXT_POS.put("LEFT", new int[] {0, -1});
     }
 
     @Override
