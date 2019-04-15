@@ -18,6 +18,8 @@ public class Referee extends AbstractReferee {
     private static final int WIDTH = 6;
     private static final int HEIGHT = 6;
     private static final int MAX_TURNS = 200;
+    private static final String DEAD_TILE_CHAR = "x";
+    private static final String EMPTY_TILE_CHAR = "-";
     private static final String[][] GRID = new String[HEIGHT][WIDTH];
     private static final Sprite[][] PAWNS = new Sprite[HEIGHT][WIDTH];
     private static final Sprite[][] TILES = new Sprite[HEIGHT][WIDTH];
@@ -347,7 +349,7 @@ public class Referee extends AbstractReferee {
         for(int i=0; i<HEIGHT; i++) {
             Sprite tile = TILES[i][columnIndex];
             tile.setAlpha(0);
-            GRID[i][columnIndex] = "x";
+            removeTile(i, columnIndex);
         }
     }
 
@@ -393,8 +395,12 @@ public class Referee extends AbstractReferee {
         for(int i=0; i<WIDTH; i++) {
             Sprite tile = TILES[lineIndex][i];
             tile.setAlpha(0);
-            GRID[lineIndex][i] = "x";
+            removeTile(lineIndex, i);
         }
+    }
+
+    private void removeTile(int y, int x) {
+        GRID[y][x] = DEAD_TILE_CHAR;
     }
 
     private int[] countPlayersPawn(boolean maxTurnsReached) {
@@ -475,7 +481,7 @@ public class Referee extends AbstractReferee {
             GRID[nextPosCoord[0]][nextPosCoord[1]] = playerId;
             PAWNS[nextPosCoord[0]][nextPosCoord[1]] = pawn;
         }
-        GRID[y][x] = "-";
+        GRID[y][x] = EMPTY_TILE_CHAR;
         PAWNS[y][x] = null;
     }
 
