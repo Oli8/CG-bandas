@@ -6,6 +6,7 @@ import com.codingame.gameengine.core.GameManager;
 import com.codingame.gameengine.core.MultiplayerGameManager;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.codingame.gameengine.module.entities.Sprite;
+import com.codingame.gameengine.module.entities.Text;
 import com.google.inject.Inject;
 
 import java.util.Arrays;
@@ -23,6 +24,7 @@ public class Referee extends AbstractReferee {
     private static final String[][] GRID = new String[HEIGHT][WIDTH];
     private static final Sprite[][] PAWNS = new Sprite[HEIGHT][WIDTH];
     private static final Sprite[][] TILES = new Sprite[HEIGHT][WIDTH];
+    private static Text[] PAWNS_COUNTERS = new Text[2];
     private static final int CELL_SIZE = 100;
     private static final int CANVAS_WIDTH = 1920;
     private static final int CANVAS_HEIGHT = 1080;
@@ -43,6 +45,7 @@ public class Referee extends AbstractReferee {
         gameManager.setMaxTurns(MAX_TURNS);
         addPawns();
         drawGrid();
+        String panws_per_player = Integer.toString(WIDTH * HEIGHT / 2);
 
         for (Player player : gameManager.getPlayers()) {
             // Send player id, height and width
@@ -56,13 +59,19 @@ public class Referee extends AbstractReferee {
                     .setFontSize(90)
                     .setFillColor(player.getColorToken())
                     .setAnchor(0);
-
             graphicEntityModule.createSprite()
                     .setX(100 + (player.getIndex() % 2) * 1400)
                     .setY(90 + 100 * (player.getIndex() / 2))
                     .setZIndex(20)
                     .setImage(player.getAvatarToken())
                     .setAnchor(0.5);
+            PAWNS_COUNTERS[player.getIndex()] = graphicEntityModule.createText(panws_per_player)
+                    .setX(260 + (player.getIndex() % 2) * 1400)
+                    .setY(150 + 100 * (player.getIndex() / 2))
+                    .setZIndex(20)
+                    .setFontSize(90)
+                    .setFillColor(player.getColorToken())
+                    .setAnchor(0);
         }
     }
 
@@ -157,9 +166,10 @@ public class Referee extends AbstractReferee {
         checkWinner();
         findEmptyLines();
         findEmptyColumns();
+        updatePawnCounter();
         // If we reach max turns, set the winner to the player with the most pawns left
         if(turn == MAX_TURNS - 1) {
-            int[] playersPawnCount = countPlayersPawn(true);
+            int[] playersPawnCount = countPlayersPawn(false);
 
             if(playersPawnCount[0] > playersPawnCount[1]){
                 setWinner(0);
@@ -169,6 +179,16 @@ public class Referee extends AbstractReferee {
                 gameManager.addToGameSummary("It's a tie !");
                 gameManager.endGame();
             }
+        }
+    }
+
+    private void updatePawnCounter() {
+        for (Player player : gameManager.getPlayers()) {
+            int player_index = player.getIndex();
+            PAWNS_COUNTERS[player_index]
+                    .setText(Integer.toString(
+                            countPlayersPawn(false)[player_index]
+                    ));
         }
     }
 
@@ -403,7 +423,7 @@ public class Referee extends AbstractReferee {
         GRID[y][x] = DEAD_TILE_CHAR;
     }
 
-    private int[] countPlayersPawn(boolean maxTurnsReached) {
+    private int[] countPlayersPawn(boolean breakIfInProgress) {
         int playerA = 0;
         int playerB = 0;
 
@@ -416,7 +436,7 @@ public class Referee extends AbstractReferee {
                     playerB++;
                 }
 
-                if(!maxTurnsReached && playerA > 0 && playerB > 0) { // Game still in progress
+                if(breakIfInProgress && playerA > 0 && playerB > 0) { // Game still in progress
                     break;
                 }
             }
@@ -426,7 +446,7 @@ public class Referee extends AbstractReferee {
     }
 
     private boolean checkWinner() {
-        int[] playersPawnCount = countPlayersPawn(false);
+        int[] playersPawnCount = countPlayersPawn(true);
 
         if(playersPawnCount[0] == 0){
             setWinner(1);
