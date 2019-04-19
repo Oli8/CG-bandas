@@ -45,29 +45,30 @@ public class Referee extends AbstractReferee {
         gameManager.setMaxTurns(MAX_TURNS);
         addPawns();
         drawGrid();
-        String panws_per_player = Integer.toString(WIDTH * HEIGHT / 2);
+        String panwsPerPlayer = Integer.toString(WIDTH * HEIGHT / 2);
 
         for (Player player : gameManager.getPlayers()) {
             // Send player id, height and width
             player.sendInputLine(String.format("%d", player.getIndex()));
             player.sendInputLine(String.format("%d", HEIGHT));
             player.sendInputLine(String.format("%d", WIDTH));
+            int playerIndex = player.getIndex();
             graphicEntityModule.createText(player.getNicknameToken())
-                    .setX(180 + (player.getIndex() % 2) * 1400)
-                    .setY(50 + 100 * (player.getIndex() / 2))
+                    .setX(180 + (playerIndex % 2) * 1400)
+                    .setY(50 + 100 * (playerIndex / 2))
                     .setZIndex(20)
                     .setFontSize(90)
                     .setFillColor(player.getColorToken())
                     .setAnchor(0);
             graphicEntityModule.createSprite()
-                    .setX(100 + (player.getIndex() % 2) * 1400)
-                    .setY(90 + 100 * (player.getIndex() / 2))
+                    .setX(100 + (playerIndex % 2) * 1400)
+                    .setY(90 + 100 * (playerIndex / 2))
                     .setZIndex(20)
                     .setImage(player.getAvatarToken())
                     .setAnchor(0.5);
-            PAWNS_COUNTERS[player.getIndex()] = graphicEntityModule.createText(panws_per_player)
-                    .setX(260 + (player.getIndex() % 2) * 1400)
-                    .setY(150 + 100 * (player.getIndex() / 2))
+            PAWNS_COUNTERS[playerIndex] = graphicEntityModule.createText(panwsPerPlayer)
+                    .setX(260 + (playerIndex % 2) * 1400)
+                    .setY(150 + 100 * (playerIndex / 2))
                     .setZIndex(20)
                     .setFontSize(90)
                     .setFillColor(player.getColorToken())
