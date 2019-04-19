@@ -19,12 +19,13 @@
     <div>
       <div class="statement-rules-content">
         <p>The game is played on a 6x6 grid.</p>
-        <p>Both players pawns are randomly placed and fill every tiles at the beginning.</p>
+        <p>Both players pawns are placed randomly until the board is completely filled.</p>
         <p>
           Each turn every pawns of a player will move to the same direction
-          pushing the opponent's pawns if they meet its way.
+          pushing the opponent's pawns if they meet its way.<br>
+          For example: Player outputs UP, all her/his pawns are pushed UP, and any opponent pawns above the players pawns will also be pushed UP.
         </p>
-        <p>A pawn will disappear if it moves off the grid.</p>
+        <p>A pawn will disappear if it moves / is pushed off the grid.</p>
         <p>At the end of each turn, every empty lines and columns of the sides will be removed.</p>
       </div>
     </div>
@@ -37,7 +38,7 @@
             <div class="text">
                 <ul style="padding-bottom: 0;">
                     <li>
-                        Kill all of you enemy pawns.
+                        Push all the enemy pawns off the grid.
                     </li>
                 </ul>
             </div>
@@ -51,7 +52,7 @@
             <div class="text">
                 <ul style="padding-bottom: 0;">
                     <li>
-                        All of your pawns got killed.
+                        You have no pawns remaining on the grid.
                     </li>
                     <li>
                         You do not respond in time or output an unrecognized command.
@@ -89,6 +90,11 @@
           <div class="text">
               <span class="statement-lineno">Line 1 to <var>height</var></var>:
               </span> <var>width</var> space separated characters representing a line<br>
+              <ul>
+                  <li>0 or 1: player with this id</li>
+                  <li>'-': empty</li>
+                  <li>'x': hole</li>
+              </ul>
           </div>
       </div>
 
