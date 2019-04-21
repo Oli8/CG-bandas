@@ -461,8 +461,7 @@ public class Referee extends AbstractReferee {
     }
 
     private void setWinner(int playerId) {
-        Player winner;
-        winner = gameManager.getPlayer(playerId);
+        Player winner = gameManager.getPlayer(playerId);
         gameManager.addToGameSummary(GameManager.formatSuccessMessage(
                 winner.getNicknameToken() + " won!"));
         winner.setScore(1);
