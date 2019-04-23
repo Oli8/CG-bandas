@@ -16,8 +16,8 @@ public class Referee extends AbstractReferee {
     @Inject private MultiplayerGameManager<Player> gameManager;
     @Inject private GraphicEntityModule graphicEntityModule;
 
-    private static final int WIDTH = 6;
-    private static final int HEIGHT = 6;
+    private static final int WIDTH = 8;
+    private static final int HEIGHT = 8;
     private static final int MAX_TURNS = 200;
     private static final String DEAD_TILE_CHAR = "x";
     private static final String EMPTY_TILE_CHAR = "-";
@@ -77,7 +77,7 @@ public class Referee extends AbstractReferee {
     }
 
     private void drawGrid() {
-        int startY = Math.round((CANVAS_HEIGHT - (HEIGHT * CELL_SIZE)) / 2);
+        int startY = Math.round((CANVAS_HEIGHT - (HEIGHT * CELL_SIZE)) / 2) + 30;
         int startX = Math.round((CANVAS_WIDTH - (WIDTH * CELL_SIZE)) / 2);
 
         for(int i=0; i<HEIGHT; i++){
