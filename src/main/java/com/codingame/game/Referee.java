@@ -11,6 +11,7 @@ import com.google.inject.Inject;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Random;
 
 public class Referee extends AbstractReferee {
     @Inject private MultiplayerGameManager<Player> gameManager;
@@ -43,7 +44,7 @@ public class Referee extends AbstractReferee {
     public void init() {
         gameManager.setTurnMaxTime(100);
         gameManager.setMaxTurns(MAX_TURNS);
-        addPawns();
+        addPawns(gameManager.getSeed());
         drawGrid();
         String panwsPerPlayer = Integer.toString(WIDTH * HEIGHT / 2);
 
@@ -110,22 +111,26 @@ public class Referee extends AbstractReferee {
                 .setZIndex(2);
     }
 
-    private void addPawns() {
+    private void addPawns(long seed) {
+        Random rng = new Random(seed);
         int pawnsPerPlayer = WIDTH * HEIGHT / 2;
-        int[] pawns = {pawnsPerPlayer, pawnsPerPlayer};
-
+        
+        // Place all pawns for player 0 randomly
+        for(int pawn = 0; pawn < pawnsPerPlayer; pawn++){
+            int i, j;
+            do {
+                i = rng.nextInt(HEIGHT);
+                j = rng.nextInt(WIDTH);
+            } while (GRID[i][j] != null);
+            GRID[i][j] = "0";
+        }
+        
+        // All empty cells are for player 1
         for(int i=0; i<HEIGHT; i++){
             for(int j=0; j<WIDTH; j++){
-                int playerIndex;
-                if(pawns[0] == 0){
-                    playerIndex = 1;
-                } else if (pawns[1] == 0){
-                    playerIndex = 0;
-                } else {
-                    playerIndex = (int) Math.round(Math.random());
+                if(GRID[i][j] == null){
+                    GRID[i][j] = "1";
                 }
-                pawns[playerIndex] -= 1;
-                GRID[i][j] = Integer.toString(playerIndex);
             }
         }
     }
