@@ -74,14 +74,6 @@ public class Referee extends AbstractReferee {
                     .setFontSize(90)
                     .setFillColor(player.getColorToken())
                     .setAnchor(0);
-            graphicEntityModule.createText("WINNER")
-                    .setX(60 + playerIndex * 1400)
-                    .setY(210 + 100 * (playerIndex / 2))
-                    .setZIndex(20)
-                    .setFontSize(110)
-                    .setFillColor(0xffff00)
-                    .setRotation(-0.52)
-                    .setAnchor(0);
         }
     }
 
@@ -491,6 +483,15 @@ public class Referee extends AbstractReferee {
 
     private void setWinner(int playerId) {
         Player winner = gameManager.getPlayer(playerId);
+
+        graphicEntityModule.createText("WINNER")
+                .setX(60 + playerId * 1400)
+                .setY(210 + 100 * (playerId / 2))
+                .setZIndex(20)
+                .setFontSize(110)
+                .setFillColor(0xffff00)
+                .setRotation(-0.52)
+                .setAnchor(0);
         gameManager.addToGameSummary(GameManager.formatSuccessMessage(
                 winner.getNicknameToken() + " won!"));
         winner.setScore(1);
