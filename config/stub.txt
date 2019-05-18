@@ -1,7 +1,6 @@
 read myId:int
 read height:int
 read width:int
-
 gameloop
 loop height read line:string(11)
 write UP
