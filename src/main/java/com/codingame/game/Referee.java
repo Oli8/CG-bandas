@@ -114,8 +114,9 @@ public class Referee extends AbstractReferee {
     private void addPawns(long seed) {
         Random rng = new Random(seed);
         int pawnsPerPlayer = WIDTH * HEIGHT / 2;
+        int pawnsInCenterSquarePerPlayer = 8;
         // Balance center 4*4 square
-        for(int pawn = 0; pawn < 8; pawn++){
+        for(int pawn=0; pawn<pawnsInCenterSquarePerPlayer; pawn++){
             int i, j;
             do {
                 i = rng.nextInt(4) + 2;
@@ -133,7 +134,7 @@ public class Referee extends AbstractReferee {
         }
         // Remainings tiles
         // Place all pawns for player 0 randomly
-        for(int pawn=0; pawn<pawnsPerPlayer; pawn++){
+        for(int pawn=0; pawn<pawnsPerPlayer-pawnsInCenterSquarePerPlayer; pawn++){
             int i, j;
             do {
                 i = rng.nextInt(HEIGHT);
