@@ -8,7 +8,7 @@ Assets by [Kenney Vleugels](http://www.kenney.nl)
 
 ## Start
 
-* `git clone git@gitlab.com:Oli8/cg-bandas.git`  
+* `git clone git@github.com:Oli8/CG-bandas.git`  
 
 * Then, import this project as an existing maven project into your IDE:
 
