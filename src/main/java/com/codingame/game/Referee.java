@@ -48,7 +48,7 @@ public class Referee extends AbstractReferee {
         drawGrid();
         String panwsPerPlayer = Integer.toString(WIDTH * HEIGHT / 2);
 
-        for (Player player : gameManager.getPlayers()) {
+        for(Player player : gameManager.getPlayers()) {
             // Send player id, height and width
             player.sendInputLine(String.format("%d", player.getIndex()));
             player.sendInputLine(String.format("%d", HEIGHT));
@@ -206,7 +206,7 @@ public class Referee extends AbstractReferee {
     }
 
     private void updatePawnCounter() {
-        for (Player player : gameManager.getPlayers()) {
+        for(Player player : gameManager.getPlayers()) {
             int player_index = player.getIndex();
             PAWNS_COUNTERS[player_index]
                     .setText(Integer.toString(
@@ -240,7 +240,7 @@ public class Referee extends AbstractReferee {
 
     private void moveUp(String playerId) {
         for(int col=0; col<WIDTH; col++) {
-            for (int y = 0; y < HEIGHT; y++) {
+            for(int y=0; y<HEIGHT; y++) {
                 if (GRID[y][col].equals(playerId)) {
                     singleMoveUp(playerId, y, col);
                 }
@@ -268,7 +268,7 @@ public class Referee extends AbstractReferee {
 
     private void moveDown(String playerId) {
         for(int col=0; col<WIDTH; col++) {
-            for (int y = HEIGHT-1; y >= 0; y--) {
+            for(int y=HEIGHT-1; y>=0; y--) {
                 if (GRID[y][col].equals(playerId)) {
                     singleMoveDown(playerId, y, col);
                 }
@@ -295,8 +295,8 @@ public class Referee extends AbstractReferee {
     }
 
     private void moveRight(String playerId) {
-        for (int y = 0; y < HEIGHT; y++) {
-            for(int col = WIDTH - 1; col>=0; col--) {
+        for(int y=0; y<HEIGHT; y++) {
+            for(int col=WIDTH-1; col>=0; col--) {
                 if(GRID[y][col].equals(playerId)){
                     singleMoveRight(playerId, y, col);
                 }
@@ -323,8 +323,8 @@ public class Referee extends AbstractReferee {
     }
 
     private void moveLeft(String playerId) {
-        for (int y = 0; y < HEIGHT; y++) {
-            for(int col = 0; col<WIDTH; col++) {
+        for(int y=0; y<HEIGHT; y++) {
+            for(int col=0; col<WIDTH; col++) {
                 if(GRID[y][col].equals(playerId)){
                     singleMoveLeft(playerId, y, col);
                 }
@@ -450,8 +450,8 @@ public class Referee extends AbstractReferee {
         int playerA = 0;
         int playerB = 0;
 
-        for (int y = 0; y < HEIGHT; y++) {
-            for(int col = 0; col < WIDTH; col++) {
+        for(int y=0; y<HEIGHT; y++) {
+            for(int col=0; col<WIDTH; col++) {
                 String cellState = GRID[y][col];
                 if(cellState.equals("0")){
                     playerA++;
