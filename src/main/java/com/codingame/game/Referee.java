@@ -93,7 +93,7 @@ public class Referee extends AbstractReferee {
                 // Draw Pawn
                 if(cellHasPlayer(cellValue)){
                     PAWNS[i][j] = drawPawn(
-                            startX +(CELL_SIZE * j) + (CELL_SIZE / 2),
+                            startX + (CELL_SIZE * j) + (CELL_SIZE / 2),
                             startY + (CELL_SIZE / 2),
                             Integer.parseInt(cellValue)
                     );
